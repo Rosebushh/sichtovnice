@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" width="192" height="192">
+  <rect width="192" height="192" rx="42" fill="#26221d"/>
+  <rect x="14" y="14" width="164" height="164" rx="32" fill="none" stroke="#cf9522" stroke-width="3"/>
+  <!-- stylized shift table / calendar grid -->
+  <rect x="36" y="38" width="120" height="28" rx="8" fill="#1c5a3d"/>
+  <text x="96" y="58" font-family="sans-serif" font-weight="900" font-size="16" fill="#f4f9f5" text-anchor="middle" letter-spacing="3">VIOLA</text>
+  <rect x="36" y="74" width="36" height="36" rx="6" fill="#ece4d6"/>
+  <text x="54" y="98" font-family="sans-serif" font-weight="bold" font-size="18" fill="#26221d" text-anchor="middle">7</text>
+  <rect x="78" y="74" width="36" height="36" rx="6" fill="#fdf0d2"/>
+  <text x="96" y="98" font-family="sans-serif" font-weight="bold" font-size="18" fill="#cf9522" text-anchor="middle">8</text>
+  <rect x="120" y="74" width="36" height="36" rx="6" fill="#1c5a3d"/>
+  <text x="138" y="98" font-family="sans-serif" font-weight="bold" font-size="18" fill="#f4f9f5" text-anchor="middle">✓</text>
+  <rect x="36" y="118" width="120" height="36" rx="8" fill="#ece4d6"/>
+  <text x="96" y="142" font-family="sans-serif" font-weight="900" font-size="14" fill="#26221d" text-anchor="middle" letter-spacing="2">ŠICHTOVNICE</text>
+</svg>
