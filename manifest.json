@@ -1,0 +1,11 @@
+{
+  "id": "./sichtovnice",
+  "name": "Šichtovnice",
+  "short_name": "Šichtovnice",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#ece4d6",
+  "theme_color": "#1c5a3d",
+  "icons": []
+}
