@@ -4,8 +4,21 @@
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { 
+  getAuth, 
+  GoogleAuthProvider, 
+  signInWithPopup, 
+  onAuthStateChanged,
+  setPersistence,
+  browserLocalPersistence
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { 
+  getFirestore, 
+  doc, 
+  onSnapshot, 
+  setDoc,
+  getDoc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDrecQjOWJu_QorSqcurfwRzb0s3ZEfCKU",
@@ -20,14 +33,18 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
+provider.setCustomParameters({ prompt: 'select_account' });
 
-let authListener = null;
+setPersistence(auth, browserLocalPersistence).catch(console.error);
+
+let authCallback = null;
 
 window.__sichtovniceFirebase = {
   onAuth: (cb) => {
-    authListener = cb;
+    authCallback = cb;
     onAuthStateChanged(auth, (user) => {
-      if (authListener) authListener(user);
+      console.log("Firebase Auth State Changed:", user ? user.email : "none");
+      if (authCallback) authCallback(user);
     });
   },
   subscribe: (onData, onStatus) => {
@@ -35,17 +52,18 @@ window.__sichtovniceFirebase = {
       const docRef = doc(db, "sichtovnice", "main");
       return onSnapshot(docRef, (snap) => {
         if (snap.exists()) {
+          console.log("Firestore cloud snapshot received");
           onData(snap.data());
           if (onStatus) onStatus("cloud");
         } else {
           if (onStatus) onStatus("cloud");
         }
       }, (err) => {
-        console.error("Firestore subscribe error:", err);
+        console.error("Firestore onSnapshot error:", err);
         if (onStatus) onStatus("error");
       });
-    } catch (e) {
-      console.error("Firestore init error:", e);
+    } catch (err) {
+      console.error("Firestore subscribe setup error:", err);
       if (onStatus) onStatus("error");
       return () => {};
     }
@@ -54,34 +72,42 @@ window.__sichtovniceFirebase = {
     try {
       const docRef = doc(db, "sichtovnice", "main");
       await setDoc(docRef, state);
+      console.log("Firestore saved successfully");
       return true;
-    } catch (e) {
-      console.error("Firestore save error:", e);
-      throw e;
+    } catch (err) {
+      console.error("Firestore save error:", err);
+      throw err;
     }
   }
 };
 
 window.__sichtovniceLogin = async () => {
-  const btn = [...document.querySelectorAll("button")].find(x => /PŘIHLÁSIT GOOGLE/i.test(x.textContent));
+  console.log("Starting signInWithPopup...");
+  const btn = [...document.querySelectorAll("button")].find(x => /PŘIHLÁSIT GOOGLE|OTEVÍRÁM/i.test(x.textContent));
   if (btn) {
     btn.disabled = true;
     btn.textContent = "OTEVÍRÁM GOOGLE…";
   }
+
   try {
-    await signInWithPopup(auth, provider);
+    const result = await signInWithPopup(auth, provider);
+    console.log("Logged in user:", result.user.email);
+    if (authCallback) authCallback(result.user);
   } catch (err) {
-    console.error("Google sign in error:", err);
+    console.error("signInWithPopup error:", err.code, err.message);
     if (btn) {
       btn.disabled = false;
       btn.textContent = "PŘIHLÁSIT GOOGLE";
+    }
+    if (err.code !== 'auth/popup-closed-by-user') {
+      alert("Chyba přihlášení: " + err.message);
     }
   }
 };
 </script>
 
 
-<style id="sichtovnice-perfect-fixes">
+<style id="sichtovnice-final-fixes">
 html, body {
   height: auto !important;
   min-height: 100% !important;
@@ -115,7 +141,6 @@ html, body {
   position: static !important;
 }
 
-/* STICKY HLAVIČKA SE JMÉNY: NEUSTÁLE VIDITELNÁ PŘI SCROLLOVÁNÍ DOLŮ */
 .sticky-people-header {
   position: -webkit-sticky !important;
   position: sticky !important;
@@ -147,7 +172,6 @@ html, body {
   letter-spacing: 0.05em !important;
 }
 
-/* NÁPISY V OKNECH: VŽDY NA JEDNOM ŘÁDKU, VELIKOST JAKO VÍKEND */
 .state-label {
   font-family: "Oswald", "Archivo Narrow", sans-serif !important;
   font-size: 21px !important;
