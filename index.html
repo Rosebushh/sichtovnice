@@ -2,6 +2,27 @@
 <html lang="en">
   <head>
 
+<script>
+window.__authListeners = [];
+window.__sichtovniceFirebase = {
+  _user: null,
+  onAuth: function(cb) {
+    window.__authListeners.push(cb);
+    if (this._user) cb(this._user);
+  },
+  subscribe: function(onData, onStatus) {
+    if (window.__realSubscribe) return window.__realSubscribe(onData, onStatus);
+    window.__pendingSubscribe = { onData: onData, onStatus: onStatus };
+    return function() {};
+  },
+  save: async function(state) {
+    if (window.__realSave) return window.__realSave(state);
+    return false;
+  }
+};
+</script>
+
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { 
@@ -16,12 +37,11 @@ import {
   getFirestore, 
   doc, 
   onSnapshot, 
-  setDoc,
-  getDoc
+  setDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDrecQjOWJu_QorSqcurfwRzb0s3ZEfCKU",
+  apiKey: "AIzaSyCP2_AgtMkaUBi9H2L85U8kagzUGSoDAFg",
   authDomain: "viola-kalendar.firebaseapp.com",
   projectId: "viola-kalendar",
   storageBucket: "viola-kalendar.firebasestorage.app",
@@ -35,51 +55,59 @@ const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
 provider.setCustomParameters({ prompt: 'select_account' });
 
-setPersistence(auth, browserLocalPersistence).catch(console.error);
+await setPersistence(auth, browserLocalPersistence).catch(console.error);
 
-let authCallback = null;
-
-window.__sichtovniceFirebase = {
-  onAuth: (cb) => {
-    authCallback = cb;
-    onAuthStateChanged(auth, (user) => {
-      console.log("Firebase Auth State Changed:", user ? user.email : "none");
-      if (authCallback) authCallback(user);
+function notifyAuth(user) {
+  window.__sichtovniceFirebase._user = user;
+  if (window.__authListeners && window.__authListeners.length) {
+    window.__authListeners.forEach(cb => {
+      try { cb(user); } catch(e) { console.error(e); }
     });
-  },
-  subscribe: (onData, onStatus) => {
-    try {
-      const docRef = doc(db, "sichtovnice", "main");
-      return onSnapshot(docRef, (snap) => {
-        if (snap.exists()) {
-          console.log("Firestore cloud snapshot received");
-          onData(snap.data());
-          if (onStatus) onStatus("cloud");
-        } else {
-          if (onStatus) onStatus("cloud");
-        }
-      }, (err) => {
-        console.error("Firestore onSnapshot error:", err);
-        if (onStatus) onStatus("error");
-      });
-    } catch (err) {
-      console.error("Firestore subscribe setup error:", err);
+  }
+}
+
+onAuthStateChanged(auth, (user) => {
+  console.log("Firebase Auth State Changed:", user ? user.email : "none");
+  notifyAuth(user);
+});
+
+window.__realSubscribe = (onData, onStatus) => {
+  try {
+    const docRef = doc(db, "sichtovnice", "main");
+    return onSnapshot(docRef, (snap) => {
+      if (snap.exists()) {
+        console.log("Firestore cloud snapshot received");
+        onData(snap.data());
+        if (onStatus) onStatus("cloud");
+      } else {
+        if (onStatus) onStatus("cloud");
+      }
+    }, (err) => {
+      console.error("Firestore onSnapshot error:", err);
       if (onStatus) onStatus("error");
-      return () => {};
-    }
-  },
-  save: async (state) => {
-    try {
-      const docRef = doc(db, "sichtovnice", "main");
-      await setDoc(docRef, state);
-      console.log("Firestore saved successfully");
-      return true;
-    } catch (err) {
-      console.error("Firestore save error:", err);
-      throw err;
-    }
+    });
+  } catch (err) {
+    console.error("Firestore subscribe setup error:", err);
+    if (onStatus) onStatus("error");
+    return () => {};
   }
 };
+
+window.__realSave = async (state) => {
+  try {
+    const docRef = doc(db, "sichtovnice", "main");
+    await setDoc(docRef, state);
+    console.log("Firestore saved successfully");
+    return true;
+  } catch (err) {
+    console.error("Firestore save error:", err);
+    throw err;
+  }
+};
+
+if (window.__pendingSubscribe) {
+  window.__realSubscribe(window.__pendingSubscribe.onData, window.__pendingSubscribe.onStatus);
+}
 
 window.__sichtovniceLogin = async () => {
   console.log("Starting signInWithPopup...");
@@ -92,7 +120,7 @@ window.__sichtovniceLogin = async () => {
   try {
     const result = await signInWithPopup(auth, provider);
     console.log("Logged in user:", result.user.email);
-    if (authCallback) authCallback(result.user);
+    notifyAuth(result.user);
   } catch (err) {
     console.error("signInWithPopup error:", err.code, err.message);
     if (btn) {
