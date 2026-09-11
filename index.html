@@ -1072,7 +1072,6 @@ video {
   --accent: #6d4a2f;
 }
 
-/* Scroll kontejner: pro sticky na celou stránku nesmí mít předek overflow: hidden/auto */
 html, body {
   height: auto !important;
   min-height: 100% !important;
@@ -1230,8 +1229,19 @@ input[type="time"] {
 }
 .total-unit { font-size: 14px !important; font-weight: 700 !important; }
 
+/* BÍLÉ ODDĚLOVACÍ ČÁRY MEZI JMÉNY V ZÁHLAVÍ (PC I MOBIL) */
+.sticky-people-header > div {
+  border-right: 2px solid #ffffff !important;
+}
+.sticky-people-header > .date-col {
+  border-right: 2px solid #ffffff !important;
+}
+.sticky-people-header > div:last-child {
+  border-right: none !important;
+}
+
 /* ========================================================= */
-/* DESKTOP (PC) VELIKOSTI (nad 768px) - 100% BEZE ZMĚNY      */
+/* DESKTOP (PC) VELIKOSTI (nad 768px)                        */
 /* ========================================================= */
 @media (min-width: 769px) {
   html, body, #root, .sheet {
@@ -1315,7 +1325,6 @@ input[type="time"] {
 
 /* ========================================================= */
 /* MOBILNÍ VELIKOSTI (max-width: 768px) - VARIANTA 2         */
-/* Přesně 88px sloupce, vodorovný swipe, sticky lišta nahoře */
 /* ========================================================= */
 @media (max-width: 768px) {
   body { padding: 0 !important; margin: 0 !important; }
@@ -1330,7 +1339,6 @@ input[type="time"] {
     border-right: none !important;
   }
 
-  /* 2D SCROLL KONTEJNER PRO MOBIL: ZÁHLAVÍ SE POSOUVÁ A DRŽÍ NAHOŘE */
   .sheet-viewport {
     max-height: calc(100dvh - 90px) !important;
     overflow: auto !important;
@@ -1338,7 +1346,6 @@ input[type="time"] {
     -webkit-overflow-scrolling: touch !important;
   }
 
-  /* Šířka: 48px datum + 6 sloupců po 88px */
   .sheet-viewport > div {
     min-width: calc(48px + 6 * 88px) !important;
   }
@@ -1346,7 +1353,6 @@ input[type="time"] {
     grid-template-columns: 48px repeat(6, 88px) !important;
   }
 
-  /* STICKY HLAVIČKA NA MOBILU: DRŽÍ NAHOŘE PŘI POSUNU DOLŮ */
   .sticky-people-header {
     position: -webkit-sticky !important;
     position: sticky !important;
@@ -1367,7 +1373,6 @@ input[type="time"] {
     letter-spacing: 0.02em !important;
   }
 
-  /* Sloupec data vlevo (sticky doleva) */
   .date-col, .day-date {
     position: -webkit-sticky !important;
     position: sticky !important;
@@ -1389,7 +1394,6 @@ input[type="time"] {
     line-height: 1 !important;
   }
 
-  /* Buňky dne: komfortní velikost pro prst */
   .shift-cell {
     padding: 3px 3px !important;
     gap: 3px !important;
@@ -1417,7 +1421,6 @@ input[type="time"] {
     transform: none !important;
   }
 
-  /* 3 ikony stavů */
   .state-icons {
     gap: 4px !important;
     margin: 0 auto !important;
@@ -1431,7 +1434,6 @@ input[type="time"] {
     height: 14px !important;
   }
 
-  /* Nápis stavu na 1 řádku */
   .state-label {
     font-family: "Oswald", "Archivo Narrow", sans-serif !important;
     font-size: 13px !important;
@@ -1441,7 +1443,6 @@ input[type="time"] {
     padding-inline: 2px !important;
   }
 
-  /* Víkendy a svátky */
   .break-row-cell {
     min-height: 38px !important;
     padding-left: 8px !important;
