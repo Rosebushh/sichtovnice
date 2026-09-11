@@ -941,23 +941,32 @@ video {
     messagingSenderId: "313947429240",
     appId: "1:313947429240:web:5684c85b52607765f3d08d"
   };
+  const wait = (fn, n=0) => {
+    if (api) return fn();
+    if (n > 100) return Promise.reject(new Error("Firebase se nenačetl"));
+    return new Promise(resolve => setTimeout(() => resolve(wait(fn, n+1)), 100));
+  };
   window.__sichtovniceFirebase = {
     onAuth(cb) { callbacks.add(cb); if (currentUser !== undefined) cb(currentUser); },
     async signIn() {
-      const provider = new api.auth.GoogleAuthProvider();
-      return api.auth.signInWithPopup(auth, provider);
+      return wait(async () => {
+        const provider = new api.auth.GoogleAuthProvider();
+        return api.auth.signInWithPopup(auth, provider);
+      });
     },
     subscribe(onData, onStatus) {
-      if (!currentUser) return () => {};
+      if (!api || !currentUser) return () => {};
       return api.fs.onSnapshot(api.fs.doc(db, "sichtovnice", "state"), snap => {
         if (snap.exists()) onData(snap.data().state);
         onStatus?.("cloud");
       }, err => onStatus?.("error", err));
     },
     async save(state) {
-      if (!currentUser) return;
-      await api.fs.setDoc(api.fs.doc(db, "sichtovnice", "state"), {
-        state, updatedAt: api.fs.serverTimestamp(), updatedBy: currentUser.uid
+      return wait(async () => {
+        if (!currentUser) return;
+        await api.fs.setDoc(api.fs.doc(db, "sichtovnice", "state"), {
+          state, updatedAt: api.fs.serverTimestamp(), updatedBy: currentUser.uid
+        });
       });
     }
   };
@@ -969,7 +978,7 @@ video {
     const app = core.initializeApp(config);
     auth = authMod.getAuth(app); db = fs.getFirestore(app); api = { auth: authMod, fs };
     authMod.onAuthStateChanged(auth, user => { currentUser = user; callbacks.forEach(cb => cb(user)); });
-  }).catch(console.error);
+  }).catch(error => { console.error(error); callbacks.forEach(cb => cb(null, error)); });
 })();
 </script>
 
