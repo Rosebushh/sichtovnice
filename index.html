@@ -135,7 +135,8 @@ window.__sichtovniceLogin = async () => {
 </script>
 
 
-<style id="sichtovnice-final-fixes">
+<style id="sichtovnice-responsive-master">
+/* SPOLEČNÉ A PC STYLY */
 html, body {
   height: auto !important;
   min-height: 100% !important;
@@ -169,6 +170,7 @@ html, body {
   position: static !important;
 }
 
+/* STICKY HLAVIČKA SE JMÉNY */
 .sticky-people-header {
   position: -webkit-sticky !important;
   position: sticky !important;
@@ -237,6 +239,147 @@ html, body {
   position: sticky !important;
   left: 96px !important;
 }
+
+
+/* MOBILNÍ VERZE (max-width: 768px) - PC VERZE ZŮSTÁVÁ BEZE ZMĚNY */
+@media (max-width: 768px) {
+  body {
+    padding: 0 !important;
+  }
+  
+  main {
+    padding-left: 0px !important;
+    padding-right: 0px !important;
+    padding-top: 8px !important;
+    padding-bottom: 80px !important;
+  }
+
+  header {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+    margin-bottom: 12px !important;
+  }
+
+  .sheet {
+    border-left: none !important;
+    border-right: none !important;
+    border-radius: 0 !important;
+  }
+
+  /* Zajištění plynulého vodorovného i svislého scrollu */
+  .sheet-viewport {
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  /* Sticky hlavička na mobilu drží nahoře přesně */
+  .sticky-people-header {
+    position: -webkit-sticky !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 100 !important;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3) !important;
+  }
+
+  /* Velikost buněk na mobilu: aby se vše vešlo bez přetékání */
+  .shift-cell {
+    padding: 5px 4px !important;
+    gap: 4px !important;
+  }
+
+  /* Bílé okno směny */
+  .led-panel {
+    padding: 4px 5px !important;
+    gap: 4px !important;
+    border-radius: 6px !important;
+  }
+
+  /* Časy na mobilu: ideální čitelná velikost, aby se stamp vešel vedle */
+  .shift-time {
+    font-size: 20px !important;
+    line-height: 1 !important;
+  }
+
+  /* Razítko hodin na mobilu */
+  .shift-stamp {
+    height: 28px !important;
+    min-width: 28px !important;
+    padding-inline: 4px !important;
+    font-size: 19px !important;
+    border-radius: 4px !important;
+  }
+
+  /* 3 ikony na mobilu: krásně vycentrované uvnitř buňky */
+  .state-icons {
+    gap: 5px !important;
+    margin: 0 auto !important;
+  }
+
+  .state-icon {
+    width: 26px !important;
+    height: 26px !important;
+  }
+
+  .state-glyph {
+    width: 14px !important;
+    height: 14px !important;
+  }
+
+  /* Nápisy stavů na mobilu: VŽDY na 1 řádku */
+  .state-label {
+    font-size: 15px !important;
+    letter-spacing: 0.02em !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+    padding-inline: 2px !important;
+  }
+
+  /* Levý sloupec s datem a dnem na mobilu */
+  .day-date {
+    min-width: 62px !important;
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
+  }
+
+  .day-num {
+    font-size: 24px !important;
+    margin-bottom: 2px !important;
+  }
+
+  .day-name {
+    font-size: 17px !important;
+    letter-spacing: 0.02em !important;
+  }
+
+  /* Jména v záhlaví */
+  .name-head {
+    font-size: 16px !important;
+    letter-spacing: 0.02em !important;
+  }
+
+  /* Víkendový a sváteční pruh */
+  .break-row-cell {
+    min-height: 42px !important;
+    padding-left: 12px !important;
+  }
+
+  .break-row-label {
+    font-size: 18px !important;
+    left: 74px !important;
+    letter-spacing: 0.1em !important;
+  }
+
+  /* Souhrn dole */
+  .total-num {
+    font-size: 24px !important;
+  }
+
+  .total-sum {
+    font-size: 18px !important;
+  }
+}
+
 </style>
 
     <meta charset="UTF-8" />
