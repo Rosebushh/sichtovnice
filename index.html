@@ -928,10 +928,10 @@ video {
 </style>
   <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getAuth, GoogleAuthProvider, signInWithRedirect, getRedirectResult } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 const cfg={apiKey:"AIzaSyDrecQjOWJu_QorSqcurfwRzb0s3ZEfCKU",authDomain:"viola-kalendar.firebaseapp.com",projectId:"viola-kalendar",storageBucket:"viola-kalendar.firebasestorage.app",messagingSenderId:"313947429240",appId:"1:313947429240:web:5684c85b52607765f3d08d"};
 const app=initializeApp(cfg),auth=getAuth(app),provider=new GoogleAuthProvider();
-let ready;window.__sichtovniceLogin=async()=>{if(!ready)ready=new Promise(r=>{const go=async()=>{try{await signInWithPopup(auth,provider);r(true);}catch(e){r(Promise.reject(e));}};go();});return ready;};
+window.__sichtovniceLogin=()=>signInWithRedirect(auth,provider);getRedirectResult(auth).catch(e=>{if(e)console.error("Firebase redirect login",e);});
 </script>
 </head>
   <body>
