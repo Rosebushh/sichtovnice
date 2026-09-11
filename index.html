@@ -920,7 +920,7 @@ video {
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import{getAuth,GoogleAuthProvider,signInWithPopup,onAuthStateChanged}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import{getFirestore,doc,onSnapshot,setDoc,serverTimestamp}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-const app=initializeApp({apiKey:"AIzaSyDrecQjOWJu_QorSqcurfwRzb0s3ZEfCKU",authDomain:"viola-kalendar.firebaseapp.com",projectId:"viola-kalendar",storageBucket:"viola-kalendar.firebasestorage.app",messagingSenderId:"313947429240",appId:"1:313947429240:web:5684c85b52607765f3d08d"});
+const app=initializeApp({apiKey:"AIzaSyCP2_AgTMkaUBi9H2L85U8kagzUGS0DAFg",authDomain:"viola-kalendar.firebaseapp.com",projectId:"viola-kalendar",storageBucket:"viola-kalendar.firebasestorage.app",messagingSenderId:"313947429240",appId:"1:313947429240:web:0e65fc88f192f5f9f3d08d"});
 const auth=getAuth(app),db=getFirestore(app),provider=new GoogleAuthProvider(),ref=doc(db,"sichtovnice","state");
 const status=()=>document.getElementById("sync-status");const setStatus=t=>{if(status())status().textContent=t};const button=()=>[...document.querySelectorAll("button")].find(b=>/PŘIHLÁSIT GOOGLE|PŘIHLÁŠENO|OTEVÍRÁM GOOGLE/.test(b.textContent));
 let cloudText=null,writing=false,started=false;
