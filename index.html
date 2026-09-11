@@ -1,6 +1,192 @@
 <!doctype html>
 <html lang="en">
   <head>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDrecQjOWJu_QorSqcurfwRzb0s3ZEfCKU",
+  authDomain: "viola-kalendar.firebaseapp.com",
+  projectId: "viola-kalendar",
+  storageBucket: "viola-kalendar.firebasestorage.app",
+  messagingSenderId: "313947429240",
+  appId: "1:313947429240:web:0e65fc88f192f5f9f3d08d"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const provider = new GoogleAuthProvider();
+
+let authListener = null;
+
+window.__sichtovniceFirebase = {
+  onAuth: (cb) => {
+    authListener = cb;
+    onAuthStateChanged(auth, (user) => {
+      if (authListener) authListener(user);
+    });
+  },
+  subscribe: (onData, onStatus) => {
+    try {
+      const docRef = doc(db, "sichtovnice", "main");
+      return onSnapshot(docRef, (snap) => {
+        if (snap.exists()) {
+          onData(snap.data());
+          if (onStatus) onStatus("cloud");
+        } else {
+          if (onStatus) onStatus("cloud");
+        }
+      }, (err) => {
+        console.error("Firestore subscribe error:", err);
+        if (onStatus) onStatus("error");
+      });
+    } catch (e) {
+      console.error("Firestore init error:", e);
+      if (onStatus) onStatus("error");
+      return () => {};
+    }
+  },
+  save: async (state) => {
+    try {
+      const docRef = doc(db, "sichtovnice", "main");
+      await setDoc(docRef, state);
+      return true;
+    } catch (e) {
+      console.error("Firestore save error:", e);
+      throw e;
+    }
+  }
+};
+
+window.__sichtovniceLogin = async () => {
+  const btn = [...document.querySelectorAll("button")].find(x => /PŘIHLÁSIT GOOGLE/i.test(x.textContent));
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = "OTEVÍRÁM GOOGLE…";
+  }
+  try {
+    await signInWithPopup(auth, provider);
+  } catch (err) {
+    console.error("Google sign in error:", err);
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = "PŘIHLÁSIT GOOGLE";
+    }
+  }
+};
+</script>
+
+
+<style id="sichtovnice-perfect-fixes">
+html, body {
+  height: auto !important;
+  min-height: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: var(--paper) !important;
+  color: var(--ink) !important;
+  font-family: "Archivo Narrow", system-ui, sans-serif !important;
+  -webkit-font-smoothing: antialiased;
+  overflow: visible !important;
+  overflow-x: visible !important;
+  overflow-y: visible !important;
+}
+
+#root {
+  height: auto !important;
+  min-height: 100vh !important;
+  overflow: visible !important;
+  overflow-x: visible !important;
+  overflow-y: visible !important;
+}
+
+.sheet {
+  overflow: visible !important;
+}
+
+.sheet-viewport {
+  overflow: visible !important;
+  overflow-x: visible !important;
+  overflow-y: visible !important;
+  position: static !important;
+}
+
+/* STICKY HLAVIČKA SE JMÉNY: NEUSTÁLE VIDITELNÁ PŘI SCROLLOVÁNÍ DOLŮ */
+.sticky-people-header {
+  position: -webkit-sticky !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 100 !important;
+  background: var(--ink) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35) !important;
+}
+
+.day-date {
+  min-width: 76px !important;
+  padding-top: 10px !important;
+  padding-bottom: 10px !important;
+}
+
+.day-num {
+  font-family: "Oswald", "Archivo Narrow", sans-serif !important;
+  font-size: 28px !important;
+  font-weight: 600 !important;
+  line-height: 1 !important;
+  margin-bottom: 6px !important;
+}
+
+.day-name {
+  font-family: "Oswald", "Archivo Narrow", sans-serif !important;
+  font-size: 22px !important;
+  font-weight: 600 !important;
+  line-height: 1 !important;
+  letter-spacing: 0.05em !important;
+}
+
+/* NÁPISY V OKNECH: VŽDY NA JEDNOM ŘÁDKU, VELIKOST JAKO VÍKEND */
+.state-label {
+  font-family: "Oswald", "Archivo Narrow", sans-serif !important;
+  font-size: 21px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.06em !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: clip !important;
+  text-transform: uppercase !important;
+  padding-inline: 4px !important;
+}
+
+.weekend-row {
+  background-color: var(--weekend) !important;
+}
+
+.holiday-row {
+  background-color: var(--holiday) !important;
+}
+
+.break-row-cell {
+  background-color: inherit !important;
+  display: flex !important;
+  align-items: center !important;
+  padding-left: 20px !important;
+  min-height: 48px !important;
+}
+
+.break-row-label {
+  font-family: "Oswald", "Archivo Narrow", sans-serif !important;
+  font-size: 22px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.15em !important;
+  position: sticky !important;
+  left: 96px !important;
+}
+</style>
+
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sichtovnice</title>
@@ -908,114 +1094,7 @@ video {
 }
 :root{--paper: #ece4d6;--sheet: #fffcf5;--ink: #26221d;--muted: #6e6657;--rule: #bdb09f;--rule-soft: #c8bcac;--shift: #f8e7d4;--shift-line: #d2a47c;--stamp: #1c5a3d;--stamp-soft: #d9e8de;--weekend: #e5e4ec;--weekend-ink: #3b3a50;--holiday: #f2dce3;--holiday-ink: #6b243e;--today: #cf9522;--today-bg: #fdf0d2;--accent: #6d4a2f}html,body{height:auto!important;min-height:100%!important;margin:0!important;padding:0!important;background:var(--paper)!important;color:var(--ink)!important;font-family:Archivo Narrow,system-ui,sans-serif!important;-webkit-font-smoothing:antialiased;overflow:visible!important;overflow-x:visible!important;overflow-y:visible!important}#root{height:auto!important;min-height:100vh!important;overflow:visible!important;overflow-x:visible!important;overflow-y:visible!important}.font-stamp{font-family:Courier Prime,ui-monospace,monospace;font-feature-settings:"tnum"}.label{font-weight:700;text-transform:uppercase;letter-spacing:.14em}.perforation{background-image:radial-gradient(circle at center,#cbbfab 0 1.9px,transparent 2.2px);background-size:8px 12px;background-repeat:repeat-y;background-position:center top}.sheet{background:var(--sheet);border:2px solid #bdb09f;box-shadow:0 1px #fff inset,0 18px 40px -28px #26221d73;overflow:visible!important}.sheet-viewport{overflow:visible!important;overflow-x:visible!important;overflow-y:visible!important;position:static!important}.sticky-people-header{position:-webkit-sticky!important;position:sticky!important;top:0!important;z-index:100!important;background:var(--ink)!important;box-shadow:0 4px 12px #00000059!important}.cell-btn{transition:background-color .14s cubic-bezier(.25,1,.5,1),border-color .14s cubic-bezier(.25,1,.5,1),color .14s cubic-bezier(.25,1,.5,1)}input[type=time]{font-family:Courier Prime,ui-monospace,monospace}.shift-cell{container-type:inline-size}.led-panel{border-radius:8px;background:#fff;border:1px solid #d9cfc0;box-shadow:inset 0 -14px 20px -18px #26221d59}.led-digits{font-family:Oswald,Archivo Narrow,system-ui,sans-serif;font-weight:600;color:#1a1815;letter-spacing:-.01em;line-height:.95;font-variant-numeric:tabular-nums}.led-colon{color:#9a9184;padding-inline:1px}.led-rule{display:block;height:1px;margin:5px 0;background:linear-gradient(to right,rgb(38 34 29 / .14),rgb(38 34 29 / .06) 78%,transparent)}.led-edit{cursor:pointer}.led-edit:hover{background:#26221d12}.led-step{display:grid;place-items:center;width:18px;height:14px;border-radius:3px;font-size:7px;line-height:1;color:#867d70;background:#26221d0f}.state-icons{display:flex!important;justify-content:center!important;align-items:center!important;gap:8px!important;margin:0 auto!important}.state-icon{width:32px!important;height:32px!important;border-radius:9999px!important}.state-icon-obstacle{background:#dbeaf4!important;color:#2f6f9f!important}.state-icon-sick{background:#f9edbd!important;color:#9c7410!important}.state-icon-vacation{background:#dcefe1!important;color:#28734e!important}.state-glyph{width:17px!important;height:17px!important}.state-label{font-family:Oswald,Archivo Narrow,sans-serif!important;font-size:21px!important;font-weight:700!important;letter-spacing:.08em!important;line-height:1!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:clip!important;text-transform:uppercase!important}.shift-time{font-family:Oswald,Archivo Narrow,sans-serif!important;font-size:30px!important;font-weight:600!important;line-height:1!important}.edit-time{font-family:Oswald,Archivo Narrow,sans-serif!important;font-size:26px!important}.stamp{background:var(--stamp)!important;color:#f4f9f5!important;font-family:Oswald,Archivo Narrow,sans-serif!important;font-weight:600!important;font-variant-numeric:tabular-nums;letter-spacing:-.01em;transform:none!important;box-shadow:0 1px #1c5a3d59}.shift-stamp{height:36px!important;min-width:36px!important;padding-inline:6px!important;font-size:30px!important;font-weight:600!important;font-family:Oswald,Archivo Narrow,sans-serif!important;transform:none!important}.date-col{position:-webkit-sticky!important;position:sticky!important;left:0!important;z-index:20!important}.date-col:after{content:"";position:absolute;top:0;right:-8px;width:8px;height:100%;background:linear-gradient(to right,rgb(38 34 29 / .1),transparent);pointer-events:none}.day-date{min-width:76px;padding-top:10px!important;padding-bottom:10px!important}.day-num{font-family:Oswald,Archivo Narrow,sans-serif!important;font-size:28px!important;font-weight:600!important;line-height:1!important;margin-bottom:6px!important}.day-name{font-family:Oswald,Archivo Narrow,sans-serif!important;font-size:22px!important;font-weight:600!important;line-height:1!important;letter-spacing:.05em!important}.day-row{border-bottom:2px solid #bdb09f!important}.day-row>div:not(.date-col){border-right:2px solid #c8bcac!important}.col-even{background-color:#fff!important}.col-odd{background-color:#f1e7d8!important}.weekend-row{background-color:var(--weekend)!important}.holiday-row{background-color:var(--holiday)!important}.break-row-cell{background-color:inherit!important;display:flex!important;align-items:center!important;padding-left:20px!important;min-height:48px!important}.break-row-label{font-family:Oswald,Archivo Narrow,sans-serif!important;font-size:22px!important;font-weight:700!important;letter-spacing:.15em!important;position:sticky!important;left:96px!important}.name-head{font-family:Oswald,Archivo Narrow,sans-serif!important;font-size:20px!important;font-weight:600!important;letter-spacing:.05em!important}.total-num,.total-sum{font-family:Oswald,Archivo Narrow,sans-serif!important;font-weight:700!important;font-variant-numeric:tabular-nums;letter-spacing:-.01em;line-height:1}.total-num{font-size:30px!important}.total-sum{font-size:22px!important}.total-unit{font-size:14px!important;font-weight:700!important}
 </style>
-  
-<style id="sichtovnice-perfect-fixes">
-html, body {
-  height: auto !important;
-  min-height: 100% !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  background: var(--paper) !important;
-  color: var(--ink) !important;
-  font-family: "Archivo Narrow", system-ui, sans-serif !important;
-  -webkit-font-smoothing: antialiased;
-  overflow: visible !important;
-  overflow-x: visible !important;
-  overflow-y: visible !important;
-}
-
-#root {
-  height: auto !important;
-  min-height: 100vh !important;
-  overflow: visible !important;
-  overflow-x: visible !important;
-  overflow-y: visible !important;
-}
-
-.sheet {
-  overflow: visible !important;
-}
-
-.sheet-viewport {
-  overflow: visible !important;
-  overflow-x: visible !important;
-  overflow-y: visible !important;
-  position: static !important;
-}
-
-/* STICKY HLAVIČKA SE JMÉNY: NEUSTÁLE VIDITELNÁ PŘI SCROLLOVÁNÍ DOLŮ */
-.sticky-people-header {
-  position: -webkit-sticky !important;
-  position: sticky !important;
-  top: 0 !important;
-  z-index: 100 !important;
-  background: var(--ink) !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35) !important;
-}
-
-.day-date {
-  min-width: 76px !important;
-  padding-top: 10px !important;
-  padding-bottom: 10px !important;
-}
-
-.day-num {
-  font-family: "Oswald", "Archivo Narrow", sans-serif !important;
-  font-size: 28px !important;
-  font-weight: 600 !important;
-  line-height: 1 !important;
-  margin-bottom: 6px !important;
-}
-
-.day-name {
-  font-family: "Oswald", "Archivo Narrow", sans-serif !important;
-  font-size: 22px !important;
-  font-weight: 600 !important;
-  line-height: 1 !important;
-  letter-spacing: 0.05em !important;
-}
-
-/* NÁPISY V OKNECH: VŽDY NA JEDNOM ŘÁDKU, VELIKOST JAKO VÍKEND */
-.state-label {
-  font-family: "Oswald", "Archivo Narrow", sans-serif !important;
-  font-size: 21px !important;
-  font-weight: 700 !important;
-  letter-spacing: 0.06em !important;
-  line-height: 1 !important;
-  white-space: nowrap !important;
-  overflow: hidden !important;
-  text-overflow: clip !important;
-  text-transform: uppercase !important;
-  padding-inline: 4px !important;
-}
-
-.weekend-row {
-  background-color: var(--weekend) !important;
-}
-
-.holiday-row {
-  background-color: var(--holiday) !important;
-}
-
-.break-row-cell {
-  background-color: inherit !important;
-  display: flex !important;
-  align-items: center !important;
-  padding-left: 20px !important;
-  min-height: 48px !important;
-}
-
-.break-row-label {
-  font-family: "Oswald", "Archivo Narrow", sans-serif !important;
-  font-size: 22px !important;
-  font-weight: 700 !important;
-  letter-spacing: 0.15em !important;
-  position: sticky !important;
-  left: 96px !important;
-}
-</style>
-
-</head>
+  </head>
   <body>
     <div id="root"></div>
     <script>(()=>{var uc=Object.create;var fl=Object.defineProperty;var nc=Object.getOwnPropertyDescriptor;var sc=Object.getOwnPropertyNames;var dc=Object.getPrototypeOf,ic=Object.prototype.hasOwnProperty;var u=(e,a)=>fl(e,"name",{value:a,configurable:!0});var ea=(e,a)=>()=>(a||e((a={exports:{}}).exports,a),a.exports);var fc=(e,a,t,r)=>{if(a&&typeof a=="object"||typeof a=="function")for(let o of sc(a))!ic.call(e,o)&&o!==t&&fl(e,o,{get:()=>a[o],enumerable:!(r=nc(a,o))||r.enumerable});return e};var ge=(e,a,t)=>(t=e!=null?uc(dc(e)):{},fc(a||!e||!e.__esModule?fl(t,"default",{value:e,enumerable:!0}):t,e));var es=ea(B=>{"use strict";var Tt=Symbol.for("react.element"),cc=Symbol.for("react.portal"),pc=Symbol.for("react.fragment"),mc=Symbol.for("react.strict_mode"),Lc=Symbol.for("react.profiler"),hc=Symbol.for("react.provider"),xc=Symbol.for("react.context"),gc=Symbol.for("react.forward_ref"),Ic=Symbol.for("react.suspense"),Cc=Symbol.for("react.memo"),Sc=Symbol.for("react.lazy"),Gn=Symbol.iterator;function vc(e){return e===null||typeof e!="object"?null:(e=Gn&&e[Gn]||e["@@iterator"],typeof e=="function"?e:null)}u(vc,"A");var Xn={isMounted:u(function(){return!1},"isMounted"),enqueueForceUpdate:u(function(){},"enqueueForceUpdate"),enqueueReplaceState:u(function(){},"enqueueReplaceState"),enqueueSetState:u(function(){},"enqueueSetState")},Kn=Object.assign,Qn={};function at(e,a,t){this.props=e,this.context=a,this.refs=Qn,this.updater=t||Xn}u(at,"E");at.prototype.isReactComponent={};at.prototype.setState=function(e,a){if(typeof e!="object"&&typeof e!="function"&&e!=null)throw Error("setState(...): takes an object of state variables to update or a function which returns an object of state variables.");this.updater.enqueueSetState(this,e,a,"setState")};at.prototype.forceUpdate=function(e){this.updater.enqueueForceUpdate(this,e,"forceUpdate")};function $n(){}u($n,"F");$n.prototype=at.prototype;function pl(e,a,t){this.props=e,this.context=a,this.refs=Qn,this.updater=t||Xn}u(pl,"G");var ml=pl.prototype=new $n;ml.constructor=pl;Kn(ml,at.prototype);ml.isPureReactComponent=!0;var bn=Array.isArray,Zn=Object.prototype.hasOwnProperty,Ll={current:null},Yn={key:!0,ref:!0,__self:!0,__source:!0};function Jn(e,a,t){var r,o={},l=null,n=null;if(a!=null)for(r in a.ref!==void 0&&(n=a.ref),a.key!==void 0&&(l=""+a.key),a)Zn.call(a,r)&&!Yn.hasOwnProperty(r)&&(o[r]=a[r]);var s=arguments.length-2;if(s===1)o.children=t;else if(1<s){for(var d=Array(s),f=0;f<s;f++)d[f]=arguments[f+2];o.children=d}if(e&&e.defaultProps)for(r in s=e.defaultProps,s)o[r]===void 0&&(o[r]=s[r]);return{$$typeof:Tt,type:e,key:l,ref:n,props:o,_owner:Ll.current}}u(Jn,"M");function yc(e,a){return{$$typeof:Tt,type:e.type,key:a,ref:e.ref,props:e.props,_owner:e._owner}}u(yc,"N");function hl(e){return typeof e=="object"&&e!==null&&e.$$typeof===Tt}u(hl,"O");function kc(e){var a={"=":"=0",":":"=2"};return"$"+e.replace(/[=:]/g,function(t){return a[t]})}u(kc,"escape");var jn=/\/+/g;function cl(e,a){return typeof e=="object"&&e!==null&&e.key!=null?kc(""+e.key):a.toString(36)}u(cl,"Q");function Or(e,a,t,r,o){var l=typeof e;(l==="undefined"||l==="boolean")&&(e=null);var n=!1;if(e===null)n=!0;else switch(l){case"string":case"number":n=!0;break;case"object":switch(e.$$typeof){case Tt:case cc:n=!0}}if(n)return n=e,o=o(n),e=r===""?"."+cl(n,0):r,bn(o)?(t="",e!=null&&(t=e.replace(jn,"$&/")+"/"),Or(o,a,t,"",function(f){return f})):o!=null&&(hl(o)&&(o=yc(o,t+(!o.key||n&&n.key===o.key?"":(""+o.key).replace(jn,"$&/")+"/")+e)),a.push(o)),1;if(n=0,r=r===""?".":r+":",bn(e))for(var s=0;s<e.length;s++){l=e[s];var d=r+cl(l,s);n+=Or(l,a,t,d,o)}else if(d=vc(e),typeof d=="function")for(e=d.call(e),s=0;!(l=e.next()).done;)l=l.value,d=r+cl(l,s++),n+=Or(l,a,t,d,o);else if(l==="object")throw a=String(e),Error("Objects are not valid as a React child (found: "+(a==="[object Object]"?"object with keys {"+Object.keys(e).join(", ")+"}":a)+"). If you meant to render a collection of children, use an array instead.");return n}u(Or,"R");function Er(e,a,t){if(e==null)return e;var r=[],o=0;return Or(e,r,"","",function(l){return a.call(t,l,o++)}),r}u(Er,"S");function wc(e){if(e._status===-1){var a=e._result;a=a(),a.then(function(t){(e._status===0||e._status===-1)&&(e._status=1,e._result=t)},function(t){(e._status===0||e._status===-1)&&(e._status=2,e._result=t)}),e._status===-1&&(e._status=0,e._result=a)}if(e._status===1)return e._result.default;throw e._result}u(wc,"T");var me={current:null},Ur={transition:null},Pc={ReactCurrentDispatcher:me,ReactCurrentBatchConfig:Ur,ReactCurrentOwner:Ll};B.Children={map:Er,forEach:u(function(e,a,t){Er(e,function(){a.apply(this,arguments)},t)},"forEach"),count:u(function(e){var a=0;return Er(e,function(){a++}),a},"count"),toArray:u(function(e){return Er(e,function(a){return a})||[]},"toArray"),only:u(function(e){if(!hl(e))throw Error("React.Children.only expected to receive a single React element child.");return e},"only")};B.Component=at;B.Fragment=pc;B.Profiler=Lc;B.PureComponent=pl;B.StrictMode=mc;B.Suspense=Ic;B.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED=Pc;B.cloneElement=function(e,a,t){if(e==null)throw Error("React.cloneElement(...): The argument must be a React element, but you passed "+e+".");var r=Kn({},e.props),o=e.key,l=e.ref,n=e._owner;if(a!=null){if(a.ref!==void 0&&(l=a.ref,n=Ll.current),a.key!==void 0&&(o=""+a.key),e.type&&e.type.defaultProps)var s=e.type.defaultProps;for(d in a)Zn.call(a,d)&&!Yn.hasOwnProperty(d)&&(r[d]=a[d]===void 0&&s!==void 0?s[d]:a[d])}var d=arguments.length-2;if(d===1)r.children=t;else if(1<d){s=Array(d);for(var f=0;f<d;f++)s[f]=arguments[f+2];r.children=s}return{$$typeof:Tt,type:e.type,key:o,ref:l,props:r,_owner:n}};B.createContext=function(e){return e={$$typeof:xc,_currentValue:e,_currentValue2:e,_threadCount:0,Provider:null,Consumer:null,_defaultValue:null,_globalName:null},e.Provider={$$typeof:hc,_context:e},e.Consumer=e};B.createElement=Jn;B.createFactory=function(e){var a=Jn.bind(null,e);return a.type=e,a};B.createRef=function(){return{current:null}};B.forwardRef=function(e){return{$$typeof:gc,render:e}};B.isValidElement=hl;B.lazy=function(e){return{$$typeof:Sc,_payload:{_status:-1,_result:e},_init:wc}};B.memo=function(e,a){return{$$typeof:Cc,type:e,compare:a===void 0?null:a}};B.startTransition=function(e){var a=Ur.transition;Ur.transition={};try{e()}finally{Ur.transition=a}};B.unstable_act=function(){throw Error("act(...) is not supported in production builds of React.")};B.useCallback=function(e,a){return me.current.useCallback(e,a)};B.useContext=function(e){return me.current.useContext(e)};B.useDebugValue=function(){};B.useDeferredValue=function(e){return me.current.useDeferredValue(e)};B.useEffect=function(e,a){return me.current.useEffect(e,a)};B.useId=function(){return me.current.useId()};B.useImperativeHandle=function(e,a,t){return me.current.useImperativeHandle(e,a,t)};B.useInsertionEffect=function(e,a){return me.current.useInsertionEffect(e,a)};B.useLayoutEffect=function(e,a){return me.current.useLayoutEffect(e,a)};B.useMemo=function(e,a){return me.current.useMemo(e,a)};B.useReducer=function(e,a,t){return me.current.useReducer(e,a,t)};B.useRef=function(e){return me.current.useRef(e)};B.useState=function(e){return me.current.useState(e)};B.useSyncExternalStore=function(e,a,t){return me.current.useSyncExternalStore(e,a,t)};B.useTransition=function(){return me.current.useTransition()};B.version="18.2.0"});var ca=ea((lL,as)=>{"use strict";as.exports=es()});var fs=ea(N=>{"use strict";function Cl(e,a){var t=e.length;e.push(a);e:for(;0<t;){var r=t-1>>>1,o=e[r];if(0<Nr(o,a))e[r]=a,e[t]=o,t=r;else break e}}u(Cl,"f");function Ne(e){return e.length===0?null:e[0]}u(Ne,"h");function Hr(e){if(e.length===0)return null;var a=e[0],t=e.pop();if(t!==a){e[0]=t;e:for(var r=0,o=e.length,l=o>>>1;r<l;){var n=2*(r+1)-1,s=e[n],d=n+1,f=e[d];if(0>Nr(s,t))d<o&&0>Nr(f,s)?(e[r]=f,e[d]=t,r=d):(e[r]=s,e[n]=t,r=n);else if(d<o&&0>Nr(f,t))e[r]=f,e[d]=t,r=d;else break e}}return a}u(Hr,"k");function Nr(e,a){var t=e.sortIndex-a.sortIndex;return t!==0?t:e.id-a.id}u(Nr,"g");typeof performance=="object"&&typeof performance.now=="function"?(ts=performance,N.unstable_now=function(){return ts.now()}):(xl=Date,rs=xl.now(),N.unstable_now=function(){return xl.now()-rs});var ts,xl,rs,Xe=[],pa=[],Dc=1,Fe=null,se=3,zr=!1,Oa=!1,Et=!1,us=typeof setTimeout=="function"?setTimeout:null,ns=typeof clearTimeout=="function"?clearTimeout:null,os=typeof setImmediate<"u"?setImmediate:null;typeof navigator<"u"&&navigator.scheduling!==void 0&&navigator.scheduling.isInputPending!==void 0&&navigator.scheduling.isInputPending.bind(navigator.scheduling);function Sl(e){for(var a=Ne(pa);a!==null;){if(a.callback===null)Hr(pa);else if(a.startTime<=e)Hr(pa),a.sortIndex=a.expirationTime,Cl(Xe,a);else break;a=Ne(pa)}}u(Sl,"G");function vl(e){if(Et=!1,Sl(e),!Oa)if(Ne(Xe)!==null)Oa=!0,kl(yl);else{var a=Ne(pa);a!==null&&wl(vl,a.startTime-e)}}u(vl,"H");function yl(e,a){Oa=!1,Et&&(Et=!1,ns(Ot),Ot=-1),zr=!0;var t=se;try{for(Sl(a),Fe=Ne(Xe);Fe!==null&&(!(Fe.expirationTime>a)||e&&!is());){var r=Fe.callback;if(typeof r=="function"){Fe.callback=null,se=Fe.priorityLevel;var o=r(Fe.expirationTime<=a);a=N.unstable_now(),typeof o=="function"?Fe.callback=o:Fe===Ne(Xe)&&Hr(Xe),Sl(a)}else Hr(Xe);Fe=Ne(Xe)}if(Fe!==null)var l=!0;else{var n=Ne(pa);n!==null&&wl(vl,n.startTime-a),l=!1}return l}finally{Fe=null,se=t,zr=!1}}u(yl,"J");var _r=!1,qr=null,Ot=-1,ss=5,ds=-1;function is(){return!(N.unstable_now()-ds<ss)}u(is,"M");function gl(){if(qr!==null){var e=N.unstable_now();ds=e;var a=!0;try{a=qr(!0,e)}finally{a?Rt():(_r=!1,qr=null)}}else _r=!1}u(gl,"R");var Rt;typeof os=="function"?Rt=u(function(){os(gl)},"S"):typeof MessageChannel<"u"?(Il=new MessageChannel,ls=Il.port2,Il.port1.onmessage=gl,Rt=u(function(){ls.postMessage(null)},"S")):Rt=u(function(){us(gl,0)},"S");var Il,ls;function kl(e){qr=e,_r||(_r=!0,Rt())}u(kl,"I");function wl(e,a){Ot=us(function(){e(N.unstable_now())},a)}u(wl,"K");N.unstable_IdlePriority=5;N.unstable_ImmediatePriority=1;N.unstable_LowPriority=4;N.unstable_NormalPriority=3;N.unstable_Profiling=null;N.unstable_UserBlockingPriority=2;N.unstable_cancelCallback=function(e){e.callback=null};N.unstable_continueExecution=function(){Oa||zr||(Oa=!0,kl(yl))};N.unstable_forceFrameRate=function(e){0>e||125<e?console.error("forceFrameRate takes a positive int between 0 and 125, forcing frame rates higher than 125 fps is not supported"):ss=0<e?Math.floor(1e3/e):5};N.unstable_getCurrentPriorityLevel=function(){return se};N.unstable_getFirstCallbackNode=function(){return Ne(Xe)};N.unstable_next=function(e){switch(se){case 1:case 2:case 3:var a=3;break;default:a=se}var t=se;se=a;try{return e()}finally{se=t}};N.unstable_pauseExecution=function(){};N.unstable_requestPaint=function(){};N.unstable_runWithPriority=function(e,a){switch(e){case 1:case 2:case 3:case 4:case 5:break;default:e=3}var t=se;se=e;try{return a()}finally{se=t}};N.unstable_scheduleCallback=function(e,a,t){var r=N.unstable_now();switch(typeof t=="object"&&t!==null?(t=t.delay,t=typeof t=="number"&&0<t?r+t:r):t=r,e){case 1:var o=-1;break;case 2:o=250;break;case 5:o=1073741823;break;case 4:o=1e4;break;default:o=5e3}return o=t+o,e={id:Dc++,callback:a,priorityLevel:e,startTime:t,expirationTime:o,sortIndex:-1},t>r?(e.sortIndex=t,Cl(pa,e),Ne(Xe)===null&&e===Ne(pa)&&(Et?(ns(Ot),Ot=-1):Et=!0,wl(vl,t-r))):(e.sortIndex=o,Cl(Xe,e),Oa||zr||(Oa=!0,kl(yl))),e};N.unstable_shouldYield=is;N.unstable_wrapCallback=function(e){var a=se;return function(){var t=se;se=a;try{return e.apply(this,arguments)}finally{se=t}}}});var ps=ea((sL,cs)=>{"use strict";cs.exports=fs()});var Cf=ea(Ae=>{"use strict";var Cd=ca(),De=ps();function g(e){for(var a="https://reactjs.org/docs/error-decoder.html?invariant="+e,t=1;t<arguments.length;t++)a+="&args[]="+encodeURIComponent(arguments[t]);return"Minified React error #"+e+"; visit "+a+" for the full message or use the non-minified dev environment for full errors and additional helpful warnings."}u(g,"p");var Sd=new Set,rr={};function Ka(e,a){vt(e,a),vt(e+"Capture",a)}u(Ka,"fa");function vt(e,a){for(rr[e]=a,e=0;e<a.length;e++)Sd.add(a[e])}u(vt,"ha");var ua=!(typeof window>"u"||typeof window.document>"u"||typeof window.document.createElement>"u"),Kl=Object.prototype.hasOwnProperty,Mc=/^[:A-Z_a-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][:A-Z_a-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$/,ms={},Ls={};function Ac(e){return Kl.call(Ls,e)?!0:Kl.call(ms,e)?!1:Mc.test(e)?Ls[e]=!0:(ms[e]=!0,!1)}u(Ac,"oa");function Fc(e,a,t,r){if(t!==null&&t.type===0)return!1;switch(typeof a){case"function":case"symbol":return!0;case"boolean":return r?!1:t!==null?!t.acceptsBooleans:(e=e.toLowerCase().slice(0,5),e!=="data-"&&e!=="aria-");default:return!1}}u(Fc,"pa");function Bc(e,a,t,r){if(a===null||typeof a>"u"||Fc(e,a,t,r))return!0;if(r)return!1;if(t!==null)switch(t.type){case 3:return!a;case 4:return a===!1;case 5:return isNaN(a);case 6:return isNaN(a)||1>a}return!1}u(Bc,"qa");function xe(e,a,t,r,o,l,n){this.acceptsBooleans=a===2||a===3||a===4,this.attributeName=r,this.attributeNamespace=o,this.mustUseProperty=t,this.propertyName=e,this.type=a,this.sanitizeURL=l,this.removeEmptyString=n}u(xe,"v");var ue={};"children dangerouslySetInnerHTML defaultValue defaultChecked innerHTML suppressContentEditableWarning suppressHydrationWarning style".split(" ").forEach(function(e){ue[e]=new xe(e,0,!1,e,null,!1,!1)});[["acceptCharset","accept-charset"],["className","class"],["htmlFor","for"],["httpEquiv","http-equiv"]].forEach(function(e){var a=e[0];ue[a]=new xe(a,1,!1,e[1],null,!1,!1)});["contentEditable","draggable","spellCheck","value"].forEach(function(e){ue[e]=new xe(e,2,!1,e.toLowerCase(),null,!1,!1)});["autoReverse","externalResourcesRequired","focusable","preserveAlpha"].forEach(function(e){ue[e]=new xe(e,2,!1,e,null,!1,!1)});"allowFullScreen async autoFocus autoPlay controls default defer disabled disablePictureInPicture disableRemotePlayback formNoValidate hidden loop noModule noValidate open playsInline readOnly required reversed scoped seamless itemScope".split(" ").forEach(function(e){ue[e]=new xe(e,3,!1,e.toLowerCase(),null,!1,!1)});["checked","multiple","muted","selected"].forEach(function(e){ue[e]=new xe(e,3,!0,e,null,!1,!1)});["capture","download"].forEach(function(e){ue[e]=new xe(e,4,!1,e,null,!1,!1)});["cols","rows","size","span"].forEach(function(e){ue[e]=new xe(e,6,!1,e,null,!1,!1)});["rowSpan","start"].forEach(function(e){ue[e]=new xe(e,5,!1,e.toLowerCase(),null,!1,!1)});var zu=/[\-:]([a-z])/g;function _u(e){return e[1].toUpperCase()}u(_u,"sa");"accent-height alignment-baseline arabic-form baseline-shift cap-height clip-path clip-rule color-interpolation color-interpolation-filters color-profile color-rendering dominant-baseline enable-background fill-opacity fill-rule flood-color flood-opacity font-family font-size font-size-adjust font-stretch font-style font-variant font-weight glyph-name glyph-orientation-horizontal glyph-orientation-vertical horiz-adv-x horiz-origin-x image-rendering letter-spacing lighting-color marker-end marker-mid marker-start overline-position overline-thickness paint-order panose-1 pointer-events rendering-intent shape-rendering stop-color stop-opacity strikethrough-position strikethrough-thickness stroke-dasharray stroke-dashoffset stroke-linecap stroke-linejoin stroke-miterlimit stroke-opacity stroke-width text-anchor text-decoration text-rendering underline-position underline-thickness unicode-bidi unicode-range units-per-em v-alphabetic v-hanging v-ideographic v-mathematical vector-effect vert-adv-y vert-origin-x vert-origin-y word-spacing writing-mode xmlns:xlink x-height".split(" ").forEach(function(e){var a=e.replace(zu,_u);ue[a]=new xe(a,1,!1,e,null,!1,!1)});"xlink:actuate xlink:arcrole xlink:role xlink:show xlink:title xlink:type".split(" ").forEach(function(e){var a=e.replace(zu,_u);ue[a]=new xe(a,1,!1,e,"http://www.w3.org/1999/xlink",!1,!1)});["xml:base","xml:lang","xml:space"].forEach(function(e){var a=e.replace(zu,_u);ue[a]=new xe(a,1,!1,e,"http://www.w3.org/XML/1998/namespace",!1,!1)});["tabIndex","crossOrigin"].forEach(function(e){ue[e]=new xe(e,1,!1,e.toLowerCase(),null,!1,!1)});ue.xlinkHref=new xe("xlinkHref",1,!1,"xlink:href","http://www.w3.org/1999/xlink",!0,!1);["src","href","action","formAction"].forEach(function(e){ue[e]=new xe(e,1,!1,e.toLowerCase(),null,!0,!0)});function Vu(e,a,t,r){var o=ue.hasOwnProperty(a)?ue[a]:null;(o!==null?o.type!==0:r||!(2<a.length)||a[0]!=="o"&&a[0]!=="O"||a[1]!=="n"&&a[1]!=="N")&&(Bc(a,t,o,r)&&(t=null),r||o===null?Ac(a)&&(t===null?e.removeAttribute(a):e.setAttribute(a,""+t)):o.mustUseProperty?e[o.propertyName]=t===null?o.type===3?!1:"":t:(a=o.attributeName,r=o.attributeNamespace,t===null?e.removeAttribute(a):(o=o.type,t=o===3||o===4&&t===!0?"":""+t,r?e.setAttributeNS(r,a,t):e.setAttribute(a,t))))}u(Vu,"ta");var ia=Cd.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED,Vr=Symbol.for("react.element"),ot=Symbol.for("react.portal"),lt=Symbol.for("react.fragment"),Wu=Symbol.for("react.strict_mode"),Ql=Symbol.for("react.profiler"),vd=Symbol.for("react.provider"),yd=Symbol.for("react.context"),Gu=Symbol.for("react.forward_ref"),$l=Symbol.for("react.suspense"),Zl=Symbol.for("react.suspense_list"),bu=Symbol.for("react.memo"),La=Symbol.for("react.lazy"),kd=Symbol.for("react.offscreen"),hs=Symbol.iterator;function Ut(e){return e===null||typeof e!="object"?null:(e=hs&&e[hs]||e["@@iterator"],typeof e=="function"?e:null)}u(Ut,"Ka");var b=Object.assign,Pl;function Gt(e){if(Pl===void 0)try{throw Error()}catch(t){var a=t.stack.trim().match(/\n( *(at )?)/);Pl=a&&a[1]||""}return`
