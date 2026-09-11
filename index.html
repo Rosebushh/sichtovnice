@@ -938,7 +938,7 @@ if(app){
  let user=null, lastCloud="", lastLocal="";
  const read=()=>localStorage.getItem("sichtovnice.v1");
  const write=(value)=>{if(value&&value!==read()){localStorage.setItem("sichtovnice.v1",value);location.reload();}};
- onAuthStateChanged(auth,u=>{user=u;if(!u)return;onSnapshot(ref,s=>{if(s.exists()){const value=JSON.stringify(s.data().state);lastCloud=value;write(value)}},console.error);setInterval(async()=>{const value=read();if(value&&value!==lastLocal&&value!==lastCloud){lastLocal=value;try{await setDoc(ref,{state:JSON.parse(value),updatedAt:serverTimestamp(),updatedBy:user.uid});const p=[...document.querySelectorAll("p")].find(x=>x.textContent.includes("Přihlášení"));if(p)p.textContent="Synchronizováno";}catch(e){console.error(e);}},700);});
+ onAuthStateChanged(auth,u=>{user=u;if(!u)return;onSnapshot(ref,s=>{if(s.exists()){const value=JSON.stringify(s.data().state);lastCloud=value;write(value)}},console.error);setInterval(async()=>{const value=read();if(value&&value!==lastLocal&&value!==lastCloud){lastLocal=value;try{await setDoc(ref,{state:JSON.parse(value),updatedAt:serverTimestamp(),updatedBy:user.uid});const p=[...document.querySelectorAll("p")].find(x=>x.textContent.includes("Přihlášení"));if(p)p.textContent="Synchronizováno";}catch(e){console.error(e);}}},700);});
 }
 </script>
 </head>
