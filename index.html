@@ -2,6 +2,26 @@
 <html lang="en">
   <head>
 
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
+<script>
+// Odstraní starý service worker i cache, aby prohlížeč vždy stáhl nejnovější verzi
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations().then(registrations => {
+    for (let registration of registrations) {
+      registration.unregister();
+    }
+  });
+}
+if ('caches' in window) {
+  caches.keys().then(names => {
+    for (let name of names) caches.delete(name);
+  });
+}
+</script>
+
+
 <script>
 window.__authListeners = [];
 window.__sichtovniceFirebase = {
