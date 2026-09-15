@@ -113,18 +113,21 @@ onAuthStateChanged(auth, (user) => {
 
 window.__realSubscribe = (onData, onStatus) => {
   try {
-    const docRef = doc(db, "sichtovnice", "v2");
-    return onSnapshot(docRef, (snap) => {
+    const docRef = doc(db, "sichtovnice", "main");
+    const unsub = onSnapshot(docRef, (snap) => {
       if (snap.exists()) {
-        onData(snap.data());
-        if (onStatus) onStatus("cloud");
+        const data = snap.data();
+        onData(data);
       } else {
-        if (onStatus) onStatus("cloud");
+        // Dokončeno první načtení z cloudu i když je dokument prázdný
+        onData(null);
       }
+      if (onStatus) onStatus("cloud");
     }, (err) => {
       console.error("Firestore onSnapshot error:", err);
       if (onStatus) onStatus("error");
     });
+    return unsub;
   } catch (err) {
     console.error("Firestore subscribe setup error:", err);
     if (onStatus) onStatus("error");
@@ -134,9 +137,13 @@ window.__realSubscribe = (onData, onStatus) => {
 
 window.__realSave = async (state) => {
   try {
-    const docRef = doc(db, "sichtovnice", "v2");
-    await setDoc(docRef, state);
-    console.log("Firestore v2 saved successfully");
+    const docRefMain = doc(db, "sichtovnice", "main");
+    const docRef2 = doc(db, "sichtovnice", "v2");
+    await Promise.all([
+      setDoc(docRefMain, state),
+      setDoc(docRef2, state)
+    ]);
+    console.log("Firestore saved successfully");
     return true;
   } catch (err) {
     console.error("Firestore save error:", err);
