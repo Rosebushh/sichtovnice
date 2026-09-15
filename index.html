@@ -15,7 +15,7 @@
 <meta http-equiv="Expires" content="0" />
 <script>
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./sw.js?v=6', { updateViaCache: 'none' })
+  navigator.serviceWorker.register('./sw.js?v=7', { updateViaCache: 'none' })
     .then((reg) => {
       reg.update();
       if (reg.waiting) reg.waiting.postMessage({ type: 'SKIP_WAITING' });
@@ -33,7 +33,7 @@ if ('serviceWorker' in navigator) {
 if ('caches' in window) {
   caches.keys().then((names) => {
     names.forEach((name) => {
-      if (!name.includes('v6')) caches.delete(name);
+      if (!name.includes('v7')) caches.delete(name);
     });
   });
 }
@@ -1411,8 +1411,9 @@ input[type="time"] {
     position: sticky !important;
     left: 0px !important;
     z-index: 50 !important;
-    min-width: 52px !important;
-    width: 52px !important;
+    min-width: 76px !important;
+    width: 76px !important;
+    box-sizing: border-box !important;
     padding: 4px 1px !important;
   }
   .day-num {
