@@ -174,12 +174,33 @@ window.__sichtovniceLogin = async () => {
 };
 </script>
 
+
+<link rel="manifest" href="./manifest.json" />
+<link rel="icon" type="image/svg+xml" href="./icon-192.svg" />
+<link rel="apple-touch-icon" href="./icon-192.svg" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Šichtovnice" />
+<meta name="theme-color" content="#26221d" />
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
+
+
+
+
+
+
+
+
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sichtovnice</title>
     <!-- artifact-input-sha256:62fa39701347a6680707a3b751c59db58885f2ac616ca788a0a3852300cc2a9a -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@500;600;700&amp;family=Courier+Prime:wght@400;700&amp;display=swap" />
     <style>
+
 @import"https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@500;600;700&family=Courier+Prime:wght@400;700&family=Oswald:wght@500;600;700&display=swap";
 html,body{height:100%}body{margin:0}#root{min-height:100vh;overflow:visible}
 *, ::before, ::after {
@@ -1477,6 +1498,396 @@ input[type="time"] {
   .break-row-label {
     font-size: 16px !important;
     left: 60px !important;
+  }
+
+  .total-num { font-size: 20px !important; }
+  .total-sum { font-size: 16px !important; }
+}
+
+
+
+@import url("https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@500;600;700&family=Courier+Prime:wght@400;700&family=Oswald:wght@500;600;700&display=swap");
+
+:root {
+  --paper: #ece4d6;
+  --sheet: #fffcf5;
+  --ink: #26221d;
+  --muted: #6e6657;
+  --rule: #bdb09f;
+  --rule-soft: #c8bcac;
+  --shift: #f8e7d4;
+  --shift-line: #d2a47c;
+  --stamp: #1c5a3d;
+  --stamp-soft: #d9e8de;
+  --weekend: #e5e4ec;
+  --weekend-ink: #3b3a50;
+  --holiday: #f2dce3;
+  --holiday-ink: #6b243e;
+  --today: #cf9522;
+  --today-bg: #fdf0d2;
+  --accent: #6d4a2f;
+}
+
+body {
+  background: var(--paper) !important;
+  color: var(--ink) !important;
+  font-family: "Archivo Narrow", system-ui, sans-serif !important;
+  -webkit-font-smoothing: antialiased;
+}
+
+.sheet {
+  background: var(--sheet);
+  border: 2px solid #bdb09f;
+  box-shadow: 0 1px 0 #fff inset, 0 18px 40px -28px rgb(38 34 29 / 0.45);
+}
+
+.cell-btn {
+  transition: background-color 140ms cubic-bezier(0.25, 1, 0.5, 1),
+    border-color 140ms cubic-bezier(0.25, 1, 0.5, 1),
+    color 140ms cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+input[type="time"] {
+  font-family: "Courier Prime", ui-monospace, monospace;
+}
+
+.shift-cell {
+  container-type: inline-size;
+}
+
+.led-panel {
+  border-radius: 8px;
+  background: #ffffff;
+  border: 1px solid #d9cfc0;
+  box-shadow: inset 0 -14px 20px -18px rgb(38 34 29 / 0.35);
+}
+
+.led-digits {
+  font-family: "Oswald", "Archivo Narrow", system-ui, sans-serif;
+  font-weight: 600;
+  color: #1a1815;
+  letter-spacing: -0.01em;
+  line-height: 0.95;
+  font-variant-numeric: tabular-nums;
+}
+
+.led-colon {
+  color: #9a9184;
+  padding-inline: 1px;
+}
+
+.led-rule {
+  display: block;
+  height: 1px;
+  margin: 5px 0;
+  background: linear-gradient(
+    to right,
+    rgb(38 34 29 / 0.14),
+    rgb(38 34 29 / 0.06) 78%,
+    transparent
+  );
+}
+
+.led-edit { cursor: pointer; }
+.led-edit:hover { background: rgb(38 34 29 / 0.07); }
+
+.led-step {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 14px;
+  border-radius: 3px;
+  font-size: 7px;
+  line-height: 1;
+  color: #867d70;
+  background: rgb(38 34 29 / 0.06);
+}
+
+.perforation {
+  background-image: radial-gradient(
+    circle at center,
+    #cbbfab 0 1.9px,
+    transparent 2.2px
+  );
+  background-size: 8px 12px;
+  background-repeat: repeat-y;
+  background-position: center top;
+}
+
+.state-icons {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 8px !important;
+  margin: 0 auto !important;
+}
+
+.state-icon {
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 9999px !important;
+}
+
+.state-icon-obstacle { background: #dbeaf4 !important; color: #2f6f9f !important; }
+.state-icon-sick { background: #f9edbd !important; color: #9c7410 !important; }
+.state-icon-vacation { background: #dcefe1 !important; color: #28734e !important; }
+
+.state-glyph { width: 17px !important; height: 17px !important; }
+
+/* Střídání sloupců */
+.col-even { background-color: #ffffff !important; }
+.col-odd { background-color: #f1e7d8 !important; }
+
+/* Víkendy a svátky */
+.weekend-row, .weekend-row > div, .weekend-row .date-col, .weekend-row .break-row-cell {
+  background-color: var(--weekend) !important;
+}
+.holiday-row, .holiday-row > div, .holiday-row .date-col, .holiday-row .break-row-cell {
+  background-color: var(--holiday) !important;
+}
+
+.break-row-cell {
+  display: flex !important;
+  align-items: center !important;
+  padding-left: 20px !important;
+  min-height: 48px !important;
+}
+
+.break-row-label {
+  font-family: "Oswald", "Archivo Narrow", sans-serif !important;
+  font-size: 22px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.15em !important;
+  position: sticky !important;
+  left: 96px !important;
+  z-index: 25 !important;
+}
+
+.day-row { border-bottom: 2px solid #bdb09f !important; }
+.day-row > div:not(.date-col) { border-right: 2px solid #c8bcac !important; }
+
+.name-head {
+  font-family: "Oswald", "Archivo Narrow", sans-serif !important;
+  font-size: 20px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.05em !important;
+}
+
+.day-num {
+  font-family: "Oswald", "Archivo Narrow", sans-serif !important;
+  font-size: 28px !important;
+  font-weight: 600 !important;
+  line-height: 1 !important;
+  margin-bottom: 6px !important;
+}
+
+.day-name {
+  font-family: "Oswald", "Archivo Narrow", sans-serif !important;
+  font-size: 22px !important;
+  font-weight: 600 !important;
+  line-height: 1 !important;
+  letter-spacing: 0.05em !important;
+}
+
+/* Razítko hodin rovné na 1 řádku */
+.stamp {
+  background: var(--stamp) !important;
+  color: #f4f9f5 !important;
+  font-family: "Oswald", "Archivo Narrow", sans-serif !important;
+  font-weight: 600 !important;
+  transform: none !important;
+  box-shadow: 0 1px 0 rgb(28 90 61 / 0.35);
+}
+
+.shift-stamp {
+  height: 38px !important;
+  min-width: 44px !important;
+  width: auto !important;
+  padding: 0 6px !important;
+  font-family: "Oswald", "Archivo Narrow", sans-serif !important;
+  font-size: 26px !important;
+  font-weight: 600 !important;
+  transform: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 2px !important;
+  white-space: nowrap !important;
+}
+
+.stamp-fraction {
+  font-size: 17px !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  vertical-align: baseline !important;
+  margin-left: 1px !important;
+}
+
+.total-num, .total-sum {
+  font-family: "Oswald", "Archivo Narrow", sans-serif !important;
+  font-weight: 700 !important;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+  line-height: 1;
+}
+.total-num { font-size: 30px !important; }
+.total-sum { font-size: 22px !important; }
+.total-unit { font-size: 14px !important; font-weight: 700 !important; }
+
+/* Bílé oddělovací linky mezi jmény */
+.sticky-people-header > div,
+.sticky-people-header > button,
+.sticky-people-header > .date-col {
+  border-right: 2px solid #ffffff !important;
+}
+.sticky-people-header > div:last-child {
+  border-right: none !important;
+}
+
+/* ========================================================= */
+/* DESKTOP (PC) VELIKOSTI (nad 768px)                        */
+/* ========================================================= */
+@media (min-width: 769px) {
+  html, body, #root, .sheet {
+    overflow: visible !important;
+  }
+  .sheet-viewport {
+    overflow: visible !important;
+    position: static !important;
+  }
+  .sticky-people-header {
+    position: -webkit-sticky !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 100 !important;
+    background: var(--ink) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35) !important;
+  }
+  .date-col {
+    position: -webkit-sticky !important;
+    position: sticky !important;
+    left: 0 !important;
+    z-index: 20 !important;
+  }
+}
+
+/* ========================================================= */
+/* MOBILNÍ VELIKOSTI (do 768px)                              */
+/* ========================================================= */
+@media (max-width: 768px) {
+  body { padding: 0 !important; margin: 0 !important; }
+  main { padding: 4px 0 60px 0 !important; }
+  header { padding: 0 10px !important; margin-bottom: 8px !important; }
+  header h1 { font-size: 24px !important; }
+  header p { font-size: 11px !important; margin-top: 1px !important; }
+
+  .sheet {
+    border-radius: 0 !important;
+    border-left: none !important;
+    border-right: none !important;
+  }
+
+  /* Na mobilu je viewport vyhrazeným 2D rolovacím kontejnerem */
+  .sheet-viewport {
+    max-height: calc(100dvh - 85px) !important;
+    overflow: auto !important;
+    position: relative !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  .sticky-people-header {
+    position: -webkit-sticky !important;
+    position: sticky !important;
+    top: 0px !important;
+    z-index: 100 !important;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.3) !important;
+    background: var(--ink) !important;
+  }
+  .sticky-people-header .date-col {
+    height: 46px !important;
+    z-index: 120 !important;
+  }
+  .sticky-people-header > div {
+    height: 46px !important;
+    padding: 0 2px !important;
+  }
+  .name-head {
+    font-size: 15px !important;
+    letter-spacing: 0.02em !important;
+  }
+
+  .date-col, .day-date {
+    position: -webkit-sticky !important;
+    position: sticky !important;
+    left: 0px !important;
+    z-index: 50 !important;
+    min-width: 76px !important;
+    width: 76px !important;
+    box-sizing: border-box !important;
+    padding: 4px 1px !important;
+  }
+  .day-num {
+    font-size: 22px !important;
+    margin-bottom: 2px !important;
+  }
+  .day-name {
+    font-size: 15px !important;
+  }
+
+  
+  .state-icons {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 4px !important;
+    margin: 0 auto !important;
+    width: 100% !important;
+  }
+  .state-icon {
+    width: 24px !important;
+    height: 24px !important;
+    min-width: 24px !important;
+    border-radius: 9999px !important;
+  }
+  .state-glyph {
+    width: 13px !important;
+    height: 13px !important;
+  }
+
+  .shift-cell {
+    padding: 3px 3px !important;
+    gap: 3px !important;
+  }
+  .led-panel {
+    padding: 3px 4px !important;
+    gap: 3px !important;
+    border-radius: 5px !important;
+  }
+  .shift-time {
+    font-size: 20px !important;
+  }
+  .led-rule {
+    margin: 2px 0 !important;
+  }
+  .shift-stamp {
+    height: 30px !important;
+    min-width: 36px !important;
+    padding: 0 4px !important;
+    font-size: 18px !important;
+    gap: 1px !important;
+  }
+  .stamp-fraction {
+    font-size: 13px !important;
+  }
+
+  .break-row-cell {
+    min-height: 38px !important;
+    padding-left: 8px !important;
+  }
+  .break-row-label {
+    font-size: 16px !important;
+    left: 92px !important;
+    z-index: 25 !important;
   }
 
   .total-num { font-size: 20px !important; }
