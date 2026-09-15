@@ -1,5 +1,5 @@
-// ŠICHTOVNICE - Network-First Service Worker & Cache Killer
-const CACHE_NAME = 'sichtovnice-v2';
+// ŠICHTOVNICE - Network-First Service Worker v5
+const CACHE_NAME = 'sichtovnice-v5';
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();
@@ -9,10 +9,7 @@ self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) => {
       return Promise.all(
-        keys.map((key) => {
-          console.log('[SW] Deleting cache:', key);
-          return caches.delete(key);
-        })
+        keys.map((key) => caches.delete(key))
       );
     }).then(() => self.clients.claim())
   );
@@ -24,7 +21,6 @@ self.addEventListener('message', (event) => {
   }
 });
 
-// VŽDY stahovat čerstvý soubor ze sítě (Network-First)
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
   event.respondWith(
