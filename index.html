@@ -15,7 +15,7 @@
 <meta http-equiv="Expires" content="0" />
 <script>
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./sw.js?v=7', { updateViaCache: 'none' })
+  navigator.serviceWorker.register('./sw.js?v=8', { updateViaCache: 'none' })
     .then((reg) => {
       reg.update();
       if (reg.waiting) reg.waiting.postMessage({ type: 'SKIP_WAITING' });
@@ -33,7 +33,7 @@ if ('serviceWorker' in navigator) {
 if ('caches' in window) {
   caches.keys().then((names) => {
     names.forEach((name) => {
-      if (!name.includes('v7')) caches.delete(name);
+      if (!name.includes('v8')) caches.delete(name);
     });
   });
 }
@@ -1422,6 +1422,26 @@ input[type="time"] {
   }
   .day-name {
     font-size: 15px !important;
+  }
+
+  
+  .state-icons {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 4px !important;
+    margin: 0 auto !important;
+    width: 100% !important;
+  }
+  .state-icon {
+    width: 24px !important;
+    height: 24px !important;
+    min-width: 24px !important;
+    border-radius: 9999px !important;
+  }
+  .state-glyph {
+    width: 13px !important;
+    height: 13px !important;
   }
 
   .shift-cell {
