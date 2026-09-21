@@ -1594,50 +1594,39 @@ body, .sheet, .name-head, .break-row-label, .day-num, .day-name, .state-label, .
 }
 
 /* ========================================================= */
-/* PULZUJÍCÍ SMARAGDOVÝ GLOW (ANIMACE)                       */
+/* PLYNULÁ SMARAGDOVÁ PULZACE (IDENTICKÁ PRO OBĚ LIŠTY)      */
 /* ========================================================= */
-@keyframes emeraldCellGlow {
+@keyframes emeraldGlowSpread {
   0%, 100% {
-    opacity: 0.45;
-    transform: scale(0.95);
+    opacity: 0.35;
+    transform: scale(0.92);
   }
   50% {
-    opacity: 0.95;
-    transform: scale(1.08);
-  }
-}
-
-@keyframes emeraldBadgePulse {
-  0%, 100% {
-    box-shadow: 0 0 14px rgba(52, 211, 153, 0.5), inset 0 0 6px rgba(52, 211, 153, 0.2);
-    border-color: #fcd34d;
-    text-shadow: 0 0 8px rgba(52, 211, 153, 0.4);
-  }
-  50% {
-    box-shadow: 0 0 28px rgba(52, 211, 153, 0.9), 0 0 45px rgba(16, 185, 129, 0.5), inset 0 0 12px rgba(52, 211, 153, 0.4);
-    border-color: #fef08a;
-    text-shadow: 0 0 16px rgba(52, 211, 153, 0.85);
-  }
-}
-
-@keyframes emeraldTotalPulse {
-  0%, 100% {
-    text-shadow: 0 0 10px rgba(52, 211, 153, 0.45);
-  }
-  50% {
-    text-shadow: 0 0 22px rgba(52, 211, 153, 0.95), 0 0 35px rgba(16, 185, 129, 0.6);
+    opacity: 0.85;
+    transform: scale(1.05);
   }
 }
 
 /* ========================================================= */
-/* LIŠTA SE JMÉNY — NEON FUSION S PULZOVÁNÍM                 */
+/* HORNÍ LIŠTA SE JMÉNY — IDENTICKÁ SE SPODNÍ                */
 /* ========================================================= */
 .sticky-people-header {
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5) !important;
   border-bottom: 2px solid #10b981 !important;
+  background: #08100c !important;
 }
 
+/* Tlačítko Jména vlevo nahoře */
+.sticky-people-header > .date-col {
+  background: #0a140f !important;
+  border-right: 2px solid #10b981 !important;
+  color: #6ee7b7 !important;
+}
+
+/* Jednotné buňky pro každého člověka nahoře */
 .sticky-people-header > div {
+  background: #0d1712 !important; /* Stejné tmavé pozadí jako dole */
+  border-right: 2px solid rgba(255, 255, 255, 0.15) !important;
   padding: 4px 6px !important;
   display: flex !important;
   align-items: center !important;
@@ -1646,77 +1635,44 @@ body, .sheet, .name-head, .break-row-label, .day-num, .day-name, .state-label, .
   overflow: hidden !important;
 }
 
-/* Smaragdový glow rozlévající se do celého okna jména */
+.sticky-people-header > div:last-child {
+  border-right: none !important;
+}
+
+/* Rozlévající se smaragdový glow uvnitř každého okna jména */
 .sticky-people-header > div::before {
   content: "" !important;
   position: absolute !important;
   inset: -15% !important;
-  background: radial-gradient(circle at center, rgba(16, 185, 129, 0.4) 0%, rgba(5, 150, 105, 0.15) 50%, transparent 75%) !important;
+  background: radial-gradient(circle at center, rgba(16, 185, 129, 0.4) 0%, rgba(5, 150, 105, 0.12) 55%, transparent 75%) !important;
   pointer-events: none !important;
-  animation: emeraldCellGlow 4s ease-in-out infinite !important;
+  animation: emeraldGlowSpread 4s ease-in-out infinite !important;
   z-index: 1 !important;
 }
 
-/* Štítek Neon Fusion pro jména */
+/* Štítek Neon Fusion pro jména — stabilní bez blikání */
 .name-head {
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
   padding: 4px 12px !important;
   border-radius: 8px !important;
-  border: 2px solid #fcd34d !important;
+  border: 2px solid #fcd34d !important; /* Zlatý rámeček */
   background: linear-gradient(180deg, #102419 0%, #07130c 100%) !important;
+  box-shadow: 0 0 16px rgba(52, 211, 153, 0.65), inset 0 0 8px rgba(52, 211, 153, 0.25) !important;
   color: #ecfdf5 !important;
   font-weight: 700 !important;
   font-size: 23px !important;
   letter-spacing: 0.02em !important;
   text-transform: uppercase !important;
   line-height: 1 !important;
+  text-shadow: 0 0 8px rgba(52, 211, 153, 0.6) !important;
   position: relative !important;
   z-index: 2 !important;
-  animation: emeraldBadgePulse 4s ease-in-out infinite !important;
 }
 
 /* ========================================================= */
-/* NÁPISY V OKNECH, VÍKEND A SVÁTKY (JEDNOTNÁ VELIKOST 23px) */
-/* ========================================================= */
-.state-label {
-  font-weight: 700 !important;
-  font-size: 23px !important;
-  letter-spacing: 0.01em !important;
-  white-space: nowrap !important;
-  line-height: 1 !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  padding: 0 !important;
-}
-
-.break-row-label {
-  font-weight: 700 !important;
-  font-size: 23px !important;
-  letter-spacing: 0.04em !important;
-  text-transform: uppercase !important;
-}
-
-/* Čas směn a razítka */
-.shift-time {
-  font-size: 28px !important;
-  font-weight: 700 !important;
-  line-height: 1 !important;
-}
-
-.stamp, .shift-stamp {
-  font-size: 26px !important;
-  font-weight: 700 !important;
-}
-
-.stamp-fraction {
-  font-size: 17px !important;
-  font-weight: 700 !important;
-}
-
-/* ========================================================= */
-/* SPODNÍ LIŠTA SE SOUHRNEM HODIN — NEON FUSION PULZOVÁNÍ    */
+/* SPODNÍ LIŠTA SE SOUHRNEM HODIN — DOKONALÝ DVOJČE HORNÍ     */
 /* ========================================================= */
 .grid.border-t-2 {
   border-top: 2px solid #10b981 !important;
@@ -1724,8 +1680,8 @@ body, .sheet, .name-head, .break-row-label, .day-num, .day-name, .state-label, .
 }
 
 .grid.border-t-2 > div {
-  border-right: 2px solid rgba(255, 255, 255, 0.15) !important;
   background: #0d1712 !important;
+  border-right: 2px solid rgba(255, 255, 255, 0.15) !important;
   position: relative !important;
   overflow: hidden !important;
 }
@@ -1734,18 +1690,17 @@ body, .sheet, .name-head, .break-row-label, .day-num, .day-name, .state-label, .
   border-right: none !important;
 }
 
-/* Smaragdová aura v celém okně souhrnu */
+/* Smaragdový glow rozlévající se do celého okna dole */
 .grid.border-t-2 > div::before {
   content: "" !important;
   position: absolute !important;
   inset: -15% !important;
-  background: radial-gradient(circle at center, rgba(16, 185, 129, 0.35) 0%, rgba(5, 150, 105, 0.12) 55%, transparent 80%) !important;
+  background: radial-gradient(circle at center, rgba(16, 185, 129, 0.4) 0%, rgba(5, 150, 105, 0.12) 55%, transparent 75%) !important;
   pointer-events: none !important;
-  animation: emeraldCellGlow 4s ease-in-out infinite !important;
+  animation: emeraldGlowSpread 4s ease-in-out infinite !important;
   z-index: 1 !important;
 }
 
-/* Celkem vlevo v patičce */
 .grid.border-t-2 > .date-col {
   background: #0a140f !important;
   border-right: 2px solid #10b981 !important;
@@ -1765,7 +1720,6 @@ body, .sheet, .name-head, .break-row-label, .day-num, .day-name, .state-label, .
   z-index: 2 !important;
 }
 
-/* Jména a hodiny v patičce */
 .grid.border-t-2 .label {
   color: #a7f3d0 !important;
   font-weight: 600 !important;
@@ -1780,7 +1734,7 @@ body, .sheet, .name-head, .break-row-label, .day-num, .day-name, .state-label, .
   font-weight: 700 !important;
   position: relative !important;
   z-index: 2 !important;
-  animation: emeraldTotalPulse 4s ease-in-out infinite !important;
+  text-shadow: 0 0 14px rgba(52, 211, 153, 0.6) !important;
 }
 
 .total-unit {
@@ -1789,6 +1743,43 @@ body, .sheet, .name-head, .break-row-label, .day-num, .day-name, .state-label, .
   font-size: 16px !important;
   position: relative !important;
   z-index: 2 !important;
+}
+
+/* ========================================================= */
+/* NÁPISY V OKNECH, VÍKEND A SVÁTKY (23px)                   */
+/* ========================================================= */
+.state-label {
+  font-weight: 700 !important;
+  font-size: 23px !important;
+  letter-spacing: 0.01em !important;
+  white-space: nowrap !important;
+  line-height: 1 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+.break-row-label {
+  font-weight: 700 !important;
+  font-size: 23px !important;
+  letter-spacing: 0.04em !important;
+  text-transform: uppercase !important;
+}
+
+.shift-time {
+  font-size: 28px !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+}
+
+.stamp, .shift-stamp {
+  font-size: 26px !important;
+  font-weight: 700 !important;
+}
+
+.stamp-fraction {
+  font-size: 17px !important;
+  font-weight: 700 !important;
 }
 
 /* Mobilní zobrazení */
