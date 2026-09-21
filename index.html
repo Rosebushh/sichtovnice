@@ -15,7 +15,7 @@
 <meta http-equiv="Expires" content="0" />
 <script>
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./sw.js?v=43', { updateViaCache: 'none' })
+  navigator.serviceWorker.register('./sw.js?v=44', { updateViaCache: 'none' })
     .then((reg) => {
       reg.update();
       if (reg.waiting) reg.waiting.postMessage({ type: 'SKIP_WAITING' });
@@ -1603,7 +1603,7 @@ body, .sheet, .name-head, .break-row-label, .day-num, .day-name, .state-label, .
 }
 
 /* ========================================================= */
-/* HORNÍ LIŠTA ZÁHLAVÍ (STICKY SPOLEČNĚ S LIŠTOU SE JMÉNY)   */
+/* HORNÍ LIŠTA ZÁHLAVÍ (HEADER APLIKACE) — EXKLUZIVNÍ NEON   */
 /* ========================================================= */
 header.app-top-header {
   position: -webkit-sticky !important;
@@ -1623,7 +1623,6 @@ header.app-top-header {
   gap: 16px !important;
 }
 
-/* Levý blok: logo, nadpis Šichtovnice a tlačítko Výkaz */
 header.app-top-header > div:first-child {
   display: flex !important;
   align-items: center !important;
@@ -1782,12 +1781,12 @@ header.app-top-header h1 {
 }
 
 /* ========================================================= */
-/* HORNÍ LIŠTA SE JMÉNY — STICKY POD HLAVIČKOU              */
+/* HORNÍ LIŠTA SE JMÉNY — PŘILEPENÁ K PATĚ HLAVIČKY          */
 /* ========================================================= */
 .sticky-people-header {
   position: -webkit-sticky !important;
   position: sticky !important;
-  top: var(--top-header-height) !important; /* Přilepeno přímo pod hlavičkou */
+  top: 0px !important;
   z-index: 90 !important;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6) !important;
   border-bottom: 2.5px solid #10b981 !important;
@@ -1967,6 +1966,31 @@ header.app-top-header h1 {
 }
 
 /* ========================================================= */
+/* VÝRAZNÉ PODBARVENÍ AKTUÁLNÍHO DNE (DO ČERVENA / JANTARU)  */
+/* ========================================================= */
+/* Řádek dnešního dne: sytý teplý jantarovo-rubínový akcent */
+.day-row[data-today="1"]:not(.weekend-row):not(.holiday-row) > div:not(.date-col):not(.break-row-cell) {
+  background-color: #f9e2d5 !important; /* Výrazné teplé podbarvení do červena/korálu */
+  border-right-color: #8c281e !important;
+}
+
+.day-row[data-today="1"] > .date-col {
+  background: linear-gradient(135deg, #2b0b08 0%, #170504 100%) !important;
+  border-right: 2.5px solid #ef4444 !important; /* Zářivě červená linka */
+  box-shadow: inset 0 0 18px rgba(239, 68, 68, 0.5) !important;
+}
+
+.day-row[data-today="1"] .day-num {
+  color: #fca5a5 !important; /* Světle červená/korálová */
+  text-shadow: 0 0 12px rgba(239, 68, 68, 0.8) !important;
+}
+
+.day-row[data-today="1"] .day-name {
+  color: #f87171 !important;
+  text-shadow: 0 0 8px rgba(239, 68, 68, 0.6) !important;
+}
+
+/* ========================================================= */
 /* VÍKENDY A SVÁTKY (I PO PŘEPNUTÍ NA PRACOVNÍ DEN ZŮSTÁVÁ)  */
 /* ========================================================= */
 .weekend-row,
@@ -2102,17 +2126,38 @@ header.app-top-header h1 {
   font-weight: 700 !important;
 }
 
-/* Mobilní zobrazení */
+/* ========================================================= */
+/* MOBILNÍ ZOBRAZENÍ (DO 768px)                              */
+/* ========================================================= */
 @media (max-width: 768px) {
-  :root {
-    --top-header-height: 108px;
+  /* Celá obrazovka roluje jednotně jako na PC */
+  html, body, #root, .sheet {
+    overflow: visible !important;
   }
+  .sheet-viewport {
+    overflow-x: auto !important; /* Pouze vodorovný scroll */
+    overflow-y: visible !important;
+    max-height: none !important;
+    position: static !important;
+  }
+
   header.app-top-header {
+    position: -webkit-sticky !important;
+    position: sticky !important;
+    top: 0px !important;
+    z-index: 100 !important;
     padding: 8px 10px !important;
     gap: 8px !important;
     border-radius: 0 !important;
     margin-bottom: 0 !important;
   }
+
+  /* Na mobilu se lišta se jmény přilepí těsně k patě hlavičky */
+  .sticky-people-header {
+    top: var(--top-header-height) !important;
+    z-index: 90 !important;
+  }
+
   header.app-top-header > div:first-child {
     gap: 8px !important;
     justify-content: space-between !important;
@@ -2198,6 +2243,15 @@ header.app-top-header h1 {
     font-size: 15px !important;
   }
 }
+
+/* ========================================================= */
+/* DESKTOP (NAD 768px)                                       */
+/* ========================================================= */
+@media (min-width: 769px) {
+  .sticky-people-header {
+    top: var(--top-header-height) !important;
+  }
+}
 </style>
 </head>
   <body>
@@ -2233,11 +2287,13 @@ Error generating stack: `+l.message+`
     document.documentElement.style.setProperty('--emerald-pulse-opacity', opacity.toFixed(3));
     document.documentElement.style.setProperty('--emerald-pulse-scale', scale.toFixed(3));
     
-    // Also update sticky header top position dynamically if header changes height
+    // Update --top-header-height to exact pixel height of top header
     var topH = document.querySelector('header.app-top-header');
     if (topH) {
       var h = topH.offsetHeight;
-      if (h > 0) document.documentElement.style.setProperty('--top-header-height', h + 'px');
+      if (h > 0) {
+        document.documentElement.style.setProperty('--top-header-height', h + 'px');
+      }
     }
     
     requestAnimationFrame(tick);
