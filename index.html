@@ -1923,15 +1923,15 @@ header.app-top-header h1 {
 }
 
 /* ========================================================= */
-/* SLOUPCE S DATUMEM A DNY — BĚŽNÉ PRACOVNÍ DNY              */
+/* SLOUPCE S DATUMEM A DNY — BĚŽNÉ PRACOVNÍ DNY (MIMO DNES)  */
 /* ========================================================= */
-.day-row:not([data-is-weekend-day="1"]):not([data-is-holiday-day="1"]) > .date-col {
+.day-row:not([data-today="1"]):not([data-is-weekend-day="1"]):not([data-is-holiday-day="1"]) > .date-col {
   background: #080e0a !important;
   border-right: 2px solid #1a1815 !important;
   box-shadow: inset 0 0 16px rgba(16, 185, 129, 0.25) !important;
 }
 
-.day-row:not([data-is-weekend-day="1"]):not([data-is-holiday-day="1"]) .day-num {
+.day-row:not([data-today="1"]):not([data-is-weekend-day="1"]):not([data-is-holiday-day="1"]) .day-num {
   color: #fcd34d !important;
   text-shadow: 0 0 10px rgba(52, 211, 153, 0.5) !important;
   font-size: 28px !important;
@@ -1940,7 +1940,7 @@ header.app-top-header h1 {
   margin-bottom: 4px !important;
 }
 
-.day-row:not([data-is-weekend-day="1"]):not([data-is-holiday-day="1"]) .day-name {
+.day-row:not([data-today="1"]):not([data-is-weekend-day="1"]):not([data-is-holiday-day="1"]) .day-name {
   color: #34d399 !important;
   text-shadow: 0 0 6px rgba(52, 211, 153, 0.4) !important;
   font-size: 22px !important;
@@ -1951,7 +1951,7 @@ header.app-top-header h1 {
 
 /* ========================================================= */
 /* VÝRAZNÉ PODBARVENÍ AKTUÁLNÍHO DNE (ZÁŘÍCÍ ŽLUTÁ #CCFF00)   */
-/* Jemně podbarvený i datum smícháním #CCFF00 a tmavé         */
+/* Jemně podbarvený i datum smícháním #CCFF00 a původní černé */
 /* ========================================================= */
 .day-row[data-today="1"]:not(.weekend-row):not(.holiday-row) {
   background-color: #ccff00 !important;
@@ -1966,25 +1966,66 @@ header.app-top-header h1 {
   background-color: #ccff00 !important;
 }
 
-.day-row[data-today="1"]:not(.weekend-row):not(.holiday-row) .shift-cell button.cell-btn {
+/* Tlačítko pro zadání směny v prázdné buňce dnešního dne */
+.day-row[data-today="1"]:not(.weekend-row):not(.holiday-row) .shift-cell button[aria-label="Zadat směnu"] {
   background-color: #b8e600 !important;
 }
 
-/* Jemně podbarvený datum dnešního dne: elegantní tmavý odstín s neonově žlutým nádechem a září */
-.day-row[data-today="1"] > .date-col {
-  background: radial-gradient(circle at center, #1e2e05 0%, #0d1702 100%) !important;
+/* Jemně podbarvený datum dnešního dne: tmavý základ smíchaný s neonově žlutým nádechem */
+.day-row[data-today="1"] > .date-col,
+.day-row[data-today="1"]:not([data-is-weekend-day="1"]):not([data-is-holiday-day="1"]) > .date-col {
+  background: linear-gradient(135deg, #1c2605 0%, #0d1402 100%) !important;
   border-right: 3px solid #ccff00 !important;
-  box-shadow: inset 0 0 20px rgba(204, 255, 0, 0.5), 0 0 10px rgba(204, 255, 0, 0.4) !important;
+  box-shadow: inset 0 0 24px rgba(204, 255, 0, 0.45), 0 0 10px rgba(204, 255, 0, 0.3) !important;
 }
 
-.day-row[data-today="1"] .day-num {
+.day-row[data-today="1"] .day-num,
+.day-row[data-today="1"]:not([data-is-weekend-day="1"]):not([data-is-holiday-day="1"]) .day-num {
   color: #ccff00 !important;
   text-shadow: 0 0 14px rgba(204, 255, 0, 0.95), 0 0 24px rgba(204, 255, 0, 0.6) !important;
+  font-size: 28px !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  margin-bottom: 4px !important;
 }
 
-.day-row[data-today="1"] .day-name {
+.day-row[data-today="1"] .day-name,
+.day-row[data-today="1"]:not([data-is-weekend-day="1"]):not([data-is-holiday-day="1"]) .day-name {
   color: #e5ff80 !important;
   text-shadow: 0 0 10px rgba(204, 255, 0, 0.8) !important;
+  font-size: 22px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.05em !important;
+  line-height: 1 !important;
+}
+
+/* OCHRANA IKON STAVŮ: ikony si VŽDY drží své originální barvy a podbarvení dne na ně nesahá */
+.state-icon,
+.day-row .state-icon,
+.day-row[data-today="1"] .state-icon,
+.day-row[data-today="1"] .shift-cell .state-icon {
+  background-color: var(--state-icon-bg, inherit) !important;
+}
+
+.state-icon-obstacle,
+.state-icon[title*="překážk" i],
+.state-icon[aria-label*="překážk" i] {
+  background: #cce5f7 !important;
+  color: #0d426b !important;
+}
+
+.state-icon-sick,
+.state-icon[title*="nemoc" i],
+.state-icon[aria-label*="nemoc" i] {
+  background: #fef0a8 !important;
+  color: #5c3d00 !important;
+}
+
+.state-icon-vacation,
+.state-icon[title*="dovolen" i],
+.state-icon[aria-label*="dovolen" i] {
+  background: #bfe3cd !important;
+  color: #14512f !important;
 }
 
 /* ========================================================= */
