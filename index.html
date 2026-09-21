@@ -15,7 +15,7 @@
 <meta http-equiv="Expires" content="0" />
 <script>
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./sw.js?v=20', { updateViaCache: 'none' })
+  navigator.serviceWorker.register('./sw.js?v=21', { updateViaCache: 'none' })
     .then((reg) => {
       reg.update();
       if (reg.waiting) reg.waiting.postMessage({ type: 'SKIP_WAITING' });
@@ -33,7 +33,7 @@ if ('serviceWorker' in navigator) {
 if ('caches' in window) {
   caches.keys().then((names) => {
     names.forEach((name) => {
-      if (!name.includes('v20')) caches.delete(name);
+      if (!name.includes('v21')) caches.delete(name);
     });
   });
 }
@@ -61,118 +61,21 @@ window.__sichtovniceFirebase = {
     return false;
   }
 };
-</script>
-
-<script>
+</script><script>
 (function(){
-  // 1. Wrap subscribe to inject Martin into cloud data
-  var origSub = window.__sichtovniceFirebase.subscribe;
-  window.__sichtovniceFirebase.subscribe = function(onData, onStatus) {
-    return origSub(function(data) {
-      if (data && data.people && Array.isArray(data.people)) {
-        var hasMartin = false;
-        for (var i = 0; i < data.people.length; i++) {
-          if (data.people[i].name === "Martin") { hasMartin = true; break; }
-        }
-        if (!hasMartin) {
-          data = JSON.parse(JSON.stringify(data));
-          data.people.unshift({id:"martin-" + Date.now(), name:"Martin", email:"rosebushh@gmail.com"});
-        }
-      }
-      onData(data);
-    }, onStatus);
-  };
-
-  // 2. Hide Martin column for non-admin/non-accountant
-  var ADMIN = ["rosebushh@gmail.com","malikkarel01@gmail.com"];
-  var ACCT = ["katerina.vodova@gmail.com"];
-  function getEmail() {
-    // Check _user first (real Firebase login)
-    var fb = window.__sichtovniceFirebase;
-    if (fb && fb._user && fb._user.email) return fb._user.email.toLowerCase().trim();
-    // Fallback: read from sync-status element (works for console testing too)
-    var el = document.getElementById("sync-status");
-    if (el) {
-      var txt = el.textContent || "";
-      var m = txt.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+/);
-      if (m) return m[0].toLowerCase().trim();
-    }
-    return "";
-  }
-  function canSee(em) {
-    if (!em) return false;
-    return ADMIN.indexOf(em) >= 0 || ACCT.indexOf(em) >= 0;
-  }
-  function hideMartin() {
-    var email = getEmail();
-    var s = document.getElementById("hide-martin-css");
-    if (canSee(email)) { if (s) s.remove(); return; }
-    var hdr = document.querySelector(".sticky-people-header");
-    if (!hdr) return;
-    var names = hdr.querySelectorAll(".name-head");
-    var idx = -1;
-    for (var i = 0; i < names.length; i++) {
-      if (names[i].textContent.trim() === "Martin") { idx = i; break; }
-    }
-    if (idx < 0) return;
-    var col = idx + 2;
-    if (!s) { s = document.createElement("style"); s.id = "hide-martin-css"; document.head.appendChild(s); }
-    s.textContent = ".sticky-people-header>*:nth-child(" + col + ")," +
-      ".day-row>*:nth-child(" + col + ")," +
-      ".grid.border-t-2>*:nth-child(" + col + "){display:none!important}";
-  }
-  setInterval(hideMartin, 600);
-  window.__authListeners.push(function() { setTimeout(hideMartin, 200); setTimeout(hideMartin, 600); });
-
-  // 3. Admin: click vacation label to toggle lateRequest (red/striped <-> green)
-  function setupVacationToggle() {
-    var email = getEmail();
-    var isAdmin = ADMIN.indexOf(email) >= 0;
-    if (!isAdmin) return;
-    document.addEventListener("click", function(e) {
-      var label = e.target.closest(".state-label");
-      if (!label) return;
-      var text = label.textContent.trim().toLowerCase();
-      if (text.indexOf("dovolen") < 0) return;
-      // Find the cell container
-      var cell = label.closest(".shift-cell") || label.closest("[class*='aspect']");
-      if (!cell) return;
-      // Toggle the striped/late appearance
-      var wrapper = label.closest("[class*='overflow-hidden']") || label.parentElement;
-      if (!wrapper) return;
-      var stripe = wrapper.querySelector("[aria-hidden]");
-      if (stripe) {
-        // Currently striped (late) -> remove stripe, change to green
-        stripe.remove();
-        wrapper.style.borderColor = "#8cc6a5";
-        wrapper.style.background = "#bfe3cd";
-        label.style.color = "#14512f";
-      } else {
-        // Currently green (on-time) -> add stripe, change to red
-        wrapper.style.borderColor = "#dd9e90";
-        wrapper.style.background = "#f6c7bd";
-        label.style.color = "#5e1c11";
-        var s = document.createElement("span");
-        s.setAttribute("aria-hidden", "true");
-        s.className = "pointer-events-none absolute inset-0";
-        s.style.backgroundImage = "repeating-linear-gradient(-45deg, rgb(22 90 58 / 0.5) 0 5px, transparent 5px 30px)";
-        wrapper.insertBefore(s, wrapper.firstChild);
-      }
-      // Also toggle lateRequest in the React state via a synthetic approach
-      // Find the data key from the day row
-      var dayRow = cell.closest(".day-row");
-      if (dayRow && dayRow.dataset.today !== undefined) {
-        // We can't easily access React state from here, but the visual toggle is immediate
-        // The actual data toggle happens through React's own click handlers
-      }
-    }, true);
-  }
-  setTimeout(setupVacationToggle, 1500);
-  window.__authListeners.push(function() { setTimeout(setupVacationToggle, 500); });
+  var orig=window.__sichtovniceFirebase.subscribe;
+  window.__sichtovniceFirebase.subscribe=function(onData,onStatus){return orig(function(data){
+    if(data&&Array.isArray(data.people)&&!data.people.some(function(p){return p.name==="Martin"})){data=JSON.parse(JSON.stringify(data));data.people.unshift({id:"martin-"+Date.now(),name:"Martin",email:"rosebushh@gmail.com"})}
+    onData(data);
+  },onStatus)};
+  var ADMIN=["rosebushh@gmail.com","malikkarel01@gmail.com"], ACCT=["katerina.vodova@gmail.com"];
+  function email(){var u=window.__sichtovniceFirebase&&window.__sichtovniceFirebase._user;if(u&&u.email)return u.email.toLowerCase().trim();var e=document.getElementById("sync-status"),m=e&&(e.textContent||"").match(/[\w.+-]+@[\w.-]+/);return m?m[0].toLowerCase():""}
+  function admin(){return ADMIN.indexOf(email())>=0}
+  function hide(){var s=document.getElementById("hide-martin-css"),e=email();if(ADMIN.indexOf(e)>=0||ACCT.indexOf(e)>=0){if(s)s.remove();return}var h=document.querySelector(".sticky-people-header"),n=h&&h.querySelectorAll(".name-head"),i=-1;if(!n)return;for(var j=0;j<n.length;j++)if(n[j].textContent.trim()==="Martin")i=j;if(i<0)return;var c=i+2;if(!s){s=document.createElement("style");s.id="hide-martin-css";document.head.appendChild(s)}s.textContent=".sticky-people-header>*:nth-child("+c+"),.day-row>*:nth-child("+c+"),.grid.border-t-2>*:nth-child("+c+"){display:none!important}"}
+  function setup(){if(!admin())return;if(document.documentElement.dataset.vacToggle)return;document.documentElement.dataset.vacToggle="1";document.addEventListener("click",function(ev){var lab=ev.target.closest&&ev.target.closest(".state-label");if(!lab||lab.textContent.trim().toLowerCase().indexOf("dovolen")<0)return;var box=lab.closest(".overflow-hidden");if(!box)return;box.classList.toggle("admin-vacation-green");},true)}
+  setInterval(function(){hide();setup()},500);window.__authListeners.push(function(){setTimeout(function(){hide();setup()},250)})
 })();
 </script>
-
-
 
 
 <script type="module">
@@ -1668,20 +1571,16 @@ input[type="time"] {
   .total-sum { font-size: 16px !important; }
 }
 
-
-.state-label {
-  font-family: 'Oswald', 'Archivo Narrow', system-ui, sans-serif !important;
-  font-size: 24px !important;
-  font-weight: 700 !important;
-  letter-spacing: 0.12em !important;
-  white-space: nowrap !important;
-  text-transform: uppercase !important;
-}
-@media (max-width: 768px) {
-  .state-label { font-size: 17px !important; letter-spacing: 0.06em !important; }
-}
 </style>
-  </head>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;500;600;700&display=swap">
+<style>
+body,button,input,select,textarea{font-family:"Roboto Condensed","Archivo Narrow",system-ui,sans-serif!important}
+.name-head{font-family:"Oswald","Roboto Condensed",sans-serif!important;font-size:22px!important;letter-spacing:.02em!important;font-weight:700!important}
+.state-label{font-family:"Roboto Condensed","Archivo Narrow",sans-serif!important;font-size:23px!important;letter-spacing:.04em!important;font-weight:700!important;white-space:nowrap!important}
+.admin-vacation-green{background:#bfe3cd!important;border-color:#8cc6a5!important}
+.admin-vacation-green .state-label{color:#14512f!important}
+@media(max-width:768px){.name-head{font-size:17px!important}.state-label{font-size:17px!important;letter-spacing:.02em!important}}
+</style></head>
   <body>
     <div id="root"></div>
     <script>(()=>{var Mc=Object.create;var vl=Object.defineProperty;var Fc=Object.getOwnPropertyDescriptor;var Ac=Object.getOwnPropertyNames;var Tc=Object.getPrototypeOf,Bc=Object.prototype.hasOwnProperty;var u=(e,a)=>vl(e,"name",{value:a,configurable:!0});var oa=(e,a)=>()=>(a||e((a={exports:{}}).exports,a),a.exports);var Rc=(e,a,t,o)=>{if(a&&typeof a=="object"||typeof a=="function")for(let r of Ac(a))!Bc.call(e,r)&&r!==t&&vl(e,r,{get:()=>a[r],enumerable:!(o=Fc(a,r))||o.enumerable});return e};var ve=(e,a,t)=>(t=e!=null?Mc(Tc(e)):{},Rc(a||!e||!e.__esModule?vl(t,"default",{value:e,enumerable:!0}):t,e));var Is=oa(E=>{"use strict";var Nt=Symbol.for("react.element"),Ec=Symbol.for("react.portal"),Oc=Symbol.for("react.fragment"),Uc=Symbol.for("react.strict_mode"),Nc=Symbol.for("react.profiler"),zc=Symbol.for("react.provider"),qc=Symbol.for("react.context"),Hc=Symbol.for("react.forward_ref"),bc=Symbol.for("react.suspense"),_c=Symbol.for("react.memo"),Vc=Symbol.for("react.lazy"),ds=Symbol.iterator;function Wc(e){return e===null||typeof e!="object"?null:(e=ds&&e[ds]||e["@@iterator"],typeof e=="function"?e:null)}u(Wc,"A");var cs={isMounted:u(function(){return!1},"isMounted"),enqueueForceUpdate:u(function(){},"enqueueForceUpdate"),enqueueReplaceState:u(function(){},"enqueueReplaceState"),enqueueSetState:u(function(){},"enqueueSetState")},ps=Object.assign,ms={};function lt(e,a,t){this.props=e,this.context=a,this.refs=ms,this.updater=t||cs}u(lt,"E");lt.prototype.isReactComponent={};lt.prototype.setState=function(e,a){if(typeof e!="object"&&typeof e!="function"&&e!=null)throw Error("setState(...): takes an object of state variables to update or a function which returns an object of state variables.");this.updater.enqueueSetState(this,e,a,"setState")};lt.prototype.forceUpdate=function(e){this.updater.enqueueForceUpdate(this,e,"forceUpdate")};function hs(){}u(hs,"F");hs.prototype=lt.prototype;function kl(e,a,t){this.props=e,this.context=a,this.refs=ms,this.updater=t||cs}u(kl,"G");var wl=kl.prototype=new hs;wl.constructor=kl;ps(wl,lt.prototype);wl.isPureReactComponent=!0;var is=Array.isArray,Ls=Object.prototype.hasOwnProperty,Pl={current:null},xs={key:!0,ref:!0,__self:!0,__source:!0};function gs(e,a,t){var o,r={},l=null,n=null;if(a!=null)for(o in a.ref!==void 0&&(n=a.ref),a.key!==void 0&&(l=""+a.key),a)Ls.call(a,o)&&!xs.hasOwnProperty(o)&&(r[o]=a[o]);var s=arguments.length-2;if(s===1)r.children=t;else if(1<s){for(var d=Array(s),f=0;f<s;f++)d[f]=arguments[f+2];r.children=d}if(e&&e.defaultProps)for(o in s=e.defaultProps,s)r[o]===void 0&&(r[o]=s[o]);return{$$typeof:Nt,type:e,key:l,ref:n,props:r,_owner:Pl.current}}u(gs,"M");function Gc(e,a){return{$$typeof:Nt,type:e.type,key:a,ref:e.ref,props:e.props,_owner:e._owner}}u(Gc,"N");function Dl(e){return typeof e=="object"&&e!==null&&e.$$typeof===Nt}u(Dl,"O");function jc(e){var a={"=":"=0",":":"=2"};return"$"+e.replace(/[=:]/g,function(t){return a[t]})}u(jc,"escape");var fs=/\/+/g;function yl(e,a){return typeof e=="object"&&e!==null&&e.key!=null?jc(""+e.key):a.toString(36)}u(yl,"Q");function Xo(e,a,t,o,r){var l=typeof e;(l==="undefined"||l==="boolean")&&(e=null);var n=!1;if(e===null)n=!0;else switch(l){case"string":case"number":n=!0;break;case"object":switch(e.$$typeof){case Nt:case Ec:n=!0}}if(n)return n=e,r=r(n),e=o===""?"."+yl(n,0):o,is(r)?(t="",e!=null&&(t=e.replace(fs,"$&/")+"/"),Xo(r,a,t,"",function(f){return f})):r!=null&&(Dl(r)&&(r=Gc(r,t+(!r.key||n&&n.key===r.key?"":(""+r.key).replace(fs,"$&/")+"/")+e)),a.push(r)),1;if(n=0,o=o===""?".":o+":",is(e))for(var s=0;s<e.length;s++){l=e[s];var d=o+yl(l,s);n+=Xo(l,a,t,d,r)}else if(d=Wc(e),typeof d=="function")for(e=d.call(e),s=0;!(l=e.next()).done;)l=l.value,d=o+yl(l,s++),n+=Xo(l,a,t,d,r);else if(l==="object")throw a=String(e),Error("Objects are not valid as a React child (found: "+(a==="[object Object]"?"object with keys {"+Object.keys(e).join(", ")+"}":a)+"). If you meant to render a collection of children, use an array instead.");return n}u(Xo,"R");function jo(e,a,t){if(e==null)return e;var o=[],r=0;return Xo(e,o,"","",function(l){return a.call(t,l,r++)}),o}u(jo,"S");function Xc(e){if(e._status===-1){var a=e._result;a=a(),a.then(function(t){(e._status===0||e._status===-1)&&(e._status=1,e._result=t)},function(t){(e._status===0||e._status===-1)&&(e._status=2,e._result=t)}),e._status===-1&&(e._status=0,e._result=a)}if(e._status===1)return e._result.default;throw e._result}u(Xc,"T");var xe={current:null},Ko={transition:null},Kc={ReactCurrentDispatcher:xe,ReactCurrentBatchConfig:Ko,ReactCurrentOwner:Pl};E.Children={map:jo,forEach:u(function(e,a,t){jo(e,function(){a.apply(this,arguments)},t)},"forEach"),count:u(function(e){var a=0;return jo(e,function(){a++}),a},"count"),toArray:u(function(e){return jo(e,function(a){return a})||[]},"toArray"),only:u(function(e){if(!Dl(e))throw Error("React.Children.only expected to receive a single React element child.");return e},"only")};E.Component=lt;E.Fragment=Oc;E.Profiler=Nc;E.PureComponent=kl;E.StrictMode=Uc;E.Suspense=bc;E.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED=Kc;E.cloneElement=function(e,a,t){if(e==null)throw Error("React.cloneElement(...): The argument must be a React element, but you passed "+e+".");var o=ps({},e.props),r=e.key,l=e.ref,n=e._owner;if(a!=null){if(a.ref!==void 0&&(l=a.ref,n=Pl.current),a.key!==void 0&&(r=""+a.key),e.type&&e.type.defaultProps)var s=e.type.defaultProps;for(d in a)Ls.call(a,d)&&!xs.hasOwnProperty(d)&&(o[d]=a[d]===void 0&&s!==void 0?s[d]:a[d])}var d=arguments.length-2;if(d===1)o.children=t;else if(1<d){s=Array(d);for(var f=0;f<d;f++)s[f]=arguments[f+2];o.children=s}return{$$typeof:Nt,type:e.type,key:r,ref:l,props:o,_owner:n}};E.createContext=function(e){return e={$$typeof:qc,_currentValue:e,_currentValue2:e,_threadCount:0,Provider:null,Consumer:null,_defaultValue:null,_globalName:null},e.Provider={$$typeof:zc,_context:e},e.Consumer=e};E.createElement=gs;E.createFactory=function(e){var a=gs.bind(null,e);return a.type=e,a};E.createRef=function(){return{current:null}};E.forwardRef=function(e){return{$$typeof:Hc,render:e}};E.isValidElement=Dl;E.lazy=function(e){return{$$typeof:Vc,_payload:{_status:-1,_result:e},_init:Xc}};E.memo=function(e,a){return{$$typeof:_c,type:e,compare:a===void 0?null:a}};E.startTransition=function(e){var a=Ko.transition;Ko.transition={};try{e()}finally{Ko.transition=a}};E.unstable_act=function(){throw Error("act(...) is not supported in production builds of React.")};E.useCallback=function(e,a){return xe.current.useCallback(e,a)};E.useContext=function(e){return xe.current.useContext(e)};E.useDebugValue=function(){};E.useDeferredValue=function(e){return xe.current.useDeferredValue(e)};E.useEffect=function(e,a){return xe.current.useEffect(e,a)};E.useId=function(){return xe.current.useId()};E.useImperativeHandle=function(e,a,t){return xe.current.useImperativeHandle(e,a,t)};E.useInsertionEffect=function(e,a){return xe.current.useInsertionEffect(e,a)};E.useLayoutEffect=function(e,a){return xe.current.useLayoutEffect(e,a)};E.useMemo=function(e,a){return xe.current.useMemo(e,a)};E.useReducer=function(e,a,t){return xe.current.useReducer(e,a,t)};E.useRef=function(e){return xe.current.useRef(e)};E.useState=function(e){return xe.current.useState(e)};E.useSyncExternalStore=function(e,a,t){return xe.current.useSyncExternalStore(e,a,t)};E.useTransition=function(){return xe.current.useTransition()};E.version="18.2.0"});var La=oa((Mh,Cs)=>{"use strict";Cs.exports=Is()});var As=oa(b=>{"use strict";function Tl(e,a){var t=e.length;e.push(a);e:for(;0<t;){var o=t-1>>>1,r=e[o];if(0<$o(r,a))e[o]=a,e[t]=r,t=o;else break e}}u(Tl,"f");function Ve(e){return e.length===0?null:e[0]}u(Ve,"h");function Zo(e){if(e.length===0)return null;var a=e[0],t=e.pop();if(t!==a){e[0]=t;e:for(var o=0,r=e.length,l=r>>>1;o<l;){var n=2*(o+1)-1,s=e[n],d=n+1,f=e[d];if(0>$o(s,t))d<r&&0>$o(f,s)?(e[o]=f,e[d]=t,o=d):(e[o]=s,e[n]=t,o=n);else if(d<r&&0>$o(f,t))e[o]=f,e[d]=t,o=d;else break e}}return a}u(Zo,"k");function $o(e,a){var t=e.sortIndex-a.sortIndex;return t!==0?t:e.id-a.id}u($o,"g");typeof performance=="object"&&typeof performance.now=="function"?(Ss=performance,b.unstable_now=function(){return Ss.now()}):(Ml=Date,vs=Ml.now(),b.unstable_now=function(){return Ml.now()-vs});var Ss,Ml,vs,Ze=[],xa=[],$c=1,Oe=null,ce=3,Yo=!1,ba=!1,qt=!1,ws=typeof setTimeout=="function"?setTimeout:null,Ps=typeof clearTimeout=="function"?clearTimeout:null,ys=typeof setImmediate<"u"?setImmediate:null;typeof navigator<"u"&&navigator.scheduling!==void 0&&navigator.scheduling.isInputPending!==void 0&&navigator.scheduling.isInputPending.bind(navigator.scheduling);function Bl(e){for(var a=Ve(xa);a!==null;){if(a.callback===null)Zo(xa);else if(a.startTime<=e)Zo(xa),a.sortIndex=a.expirationTime,Tl(Ze,a);else break;a=Ve(xa)}}u(Bl,"G");function Rl(e){if(qt=!1,Bl(e),!ba)if(Ve(Ze)!==null)ba=!0,Ol(El);else{var a=Ve(xa);a!==null&&Ul(Rl,a.startTime-e)}}u(Rl,"H");function El(e,a){ba=!1,qt&&(qt=!1,Ps(Ht),Ht=-1),Yo=!0;var t=ce;try{for(Bl(a),Oe=Ve(Ze);Oe!==null&&(!(Oe.expirationTime>a)||e&&!Fs());){var o=Oe.callback;if(typeof o=="function"){Oe.callback=null,ce=Oe.priorityLevel;var r=o(Oe.expirationTime<=a);a=b.unstable_now(),typeof r=="function"?Oe.callback=r:Oe===Ve(Ze)&&Zo(Ze),Bl(a)}else Zo(Ze);Oe=Ve(Ze)}if(Oe!==null)var l=!0;else{var n=Ve(xa);n!==null&&Ul(Rl,n.startTime-a),l=!1}return l}finally{Oe=null,ce=t,Yo=!1}}u(El,"J");var Jo=!1,Qo=null,Ht=-1,Ds=5,Ms=-1;function Fs(){return!(b.unstable_now()-Ms<Ds)}u(Fs,"M");function Fl(){if(Qo!==null){var e=b.unstable_now();Ms=e;var a=!0;try{a=Qo(!0,e)}finally{a?zt():(Jo=!1,Qo=null)}}else Jo=!1}u(Fl,"R");var zt;typeof ys=="function"?zt=u(function(){ys(Fl)},"S"):typeof MessageChannel<"u"?(Al=new MessageChannel,ks=Al.port2,Al.port1.onmessage=Fl,zt=u(function(){ks.postMessage(null)},"S")):zt=u(function(){ws(Fl,0)},"S");var Al,ks;function Ol(e){Qo=e,Jo||(Jo=!0,zt())}u(Ol,"I");function Ul(e,a){Ht=ws(function(){e(b.unstable_now())},a)}u(Ul,"K");b.unstable_IdlePriority=5;b.unstable_ImmediatePriority=1;b.unstable_LowPriority=4;b.unstable_NormalPriority=3;b.unstable_Profiling=null;b.unstable_UserBlockingPriority=2;b.unstable_cancelCallback=function(e){e.callback=null};b.unstable_continueExecution=function(){ba||Yo||(ba=!0,Ol(El))};b.unstable_forceFrameRate=function(e){0>e||125<e?console.error("forceFrameRate takes a positive int between 0 and 125, forcing frame rates higher than 125 fps is not supported"):Ds=0<e?Math.floor(1e3/e):5};b.unstable_getCurrentPriorityLevel=function(){return ce};b.unstable_getFirstCallbackNode=function(){return Ve(Ze)};b.unstable_next=function(e){switch(ce){case 1:case 2:case 3:var a=3;break;default:a=ce}var t=ce;ce=a;try{return e()}finally{ce=t}};b.unstable_pauseExecution=function(){};b.unstable_requestPaint=function(){};b.unstable_runWithPriority=function(e,a){switch(e){case 1:case 2:case 3:case 4:case 5:break;default:e=3}var t=ce;ce=e;try{return a()}finally{ce=t}};b.unstable_scheduleCallback=function(e,a,t){var o=b.unstable_now();switch(typeof t=="object"&&t!==null?(t=t.delay,t=typeof t=="number"&&0<t?o+t:o):t=o,e){case 1:var r=-1;break;case 2:r=250;break;case 5:r=1073741823;break;case 4:r=1e4;break;default:r=5e3}return r=t+r,e={id:$c++,callback:a,priorityLevel:e,startTime:t,expirationTime:r,sortIndex:-1},t>o?(e.sortIndex=t,Tl(xa,e),Ve(Ze)===null&&e===Ve(xa)&&(qt?(Ps(Ht),Ht=-1):qt=!0,Ul(Rl,t-o))):(e.sortIndex=r,Tl(Ze,e),ba||Yo||(ba=!0,Ol(El))),e};b.unstable_shouldYield=Fs;b.unstable_wrapCallback=function(e){var a=ce;return function(){var t=ce;ce=a;try{return e.apply(this,arguments)}finally{ce=t}}}});var Bs=oa((Th,Ts)=>{"use strict";Ts.exports=As()});var qf=oa(Re=>{"use strict";var qd=La(),Te=Bs();function g(e){for(var a="https://reactjs.org/docs/error-decoder.html?invariant="+e,t=1;t<arguments.length;t++)a+="&args[]="+encodeURIComponent(arguments[t]);return"Minified React error #"+e+"; visit "+a+" for the full message or use the non-minified dev environment for full errors and additional helpful warnings."}u(g,"p");var Hd=new Set,so={};function et(e,a){Pt(e,a),Pt(e+"Capture",a)}u(et,"fa");function Pt(e,a){for(so[e]=a,e=0;e<a.length;e++)Hd.add(a[e])}u(Pt,"ha");var da=!(typeof window>"u"||typeof window.document>"u"||typeof window.document.createElement>"u"),lu=Object.prototype.hasOwnProperty,Qc=/^[:A-Z_a-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][:A-Z_a-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$/,Rs={},Es={};function Zc(e){return lu.call(Es,e)?!0:lu.call(Rs,e)?!1:Qc.test(e)?Es[e]=!0:(Rs[e]=!0,!1)}u(Zc,"oa");function Yc(e,a,t,o){if(t!==null&&t.type===0)return!1;switch(typeof a){case"function":case"symbol":return!0;case"boolean":return o?!1:t!==null?!t.acceptsBooleans:(e=e.toLowerCase().slice(0,5),e!=="data-"&&e!=="aria-");default:return!1}}u(Yc,"pa");function Jc(e,a,t,o){if(a===null||typeof a>"u"||Yc(e,a,t,o))return!0;if(o)return!1;if(t!==null)switch(t.type){case 3:return!a;case 4:return a===!1;case 5:return isNaN(a);case 6:return isNaN(a)||1>a}return!1}u(Jc,"qa");function Ce(e,a,t,o,r,l,n){this.acceptsBooleans=a===2||a===3||a===4,this.attributeName=o,this.attributeNamespace=r,this.mustUseProperty=t,this.propertyName=e,this.type=a,this.sanitizeURL=l,this.removeEmptyString=n}u(Ce,"v");var ie={};"children dangerouslySetInnerHTML defaultValue defaultChecked innerHTML suppressContentEditableWarning suppressHydrationWarning style".split(" ").forEach(function(e){ie[e]=new Ce(e,0,!1,e,null,!1,!1)});[["acceptCharset","accept-charset"],["className","class"],["htmlFor","for"],["httpEquiv","http-equiv"]].forEach(function(e){var a=e[0];ie[a]=new Ce(a,1,!1,e[1],null,!1,!1)});["contentEditable","draggable","spellCheck","value"].forEach(function(e){ie[e]=new Ce(e,2,!1,e.toLowerCase(),null,!1,!1)});["autoReverse","externalResourcesRequired","focusable","preserveAlpha"].forEach(function(e){ie[e]=new Ce(e,2,!1,e,null,!1,!1)});"allowFullScreen async autoFocus autoPlay controls default defer disabled disablePictureInPicture disableRemotePlayback formNoValidate hidden loop noModule noValidate open playsInline readOnly required reversed scoped seamless itemScope".split(" ").forEach(function(e){ie[e]=new Ce(e,3,!1,e.toLowerCase(),null,!1,!1)});["checked","multiple","muted","selected"].forEach(function(e){ie[e]=new Ce(e,3,!0,e,null,!1,!1)});["capture","download"].forEach(function(e){ie[e]=new Ce(e,4,!1,e,null,!1,!1)});["cols","rows","size","span"].forEach(function(e){ie[e]=new Ce(e,6,!1,e,null,!1,!1)});["rowSpan","start"].forEach(function(e){ie[e]=new Ce(e,5,!1,e.toLowerCase(),null,!1,!1)});var Zu=/[\-:]([a-z])/g;function Yu(e){return e[1].toUpperCase()}u(Yu,"sa");"accent-height alignment-baseline arabic-form baseline-shift cap-height clip-path clip-rule color-interpolation color-interpolation-filters color-profile color-rendering dominant-baseline enable-background fill-opacity fill-rule flood-color flood-opacity font-family font-size font-size-adjust font-stretch font-style font-variant font-weight glyph-name glyph-orientation-horizontal glyph-orientation-vertical horiz-adv-x horiz-origin-x image-rendering letter-spacing lighting-color marker-end marker-mid marker-start overline-position overline-thickness paint-order panose-1 pointer-events rendering-intent shape-rendering stop-color stop-opacity strikethrough-position strikethrough-thickness stroke-dasharray stroke-dashoffset stroke-linecap stroke-linejoin stroke-miterlimit stroke-opacity stroke-width text-anchor text-decoration text-rendering underline-position underline-thickness unicode-bidi unicode-range units-per-em v-alphabetic v-hanging v-ideographic v-mathematical vector-effect vert-adv-y vert-origin-x vert-origin-y word-spacing writing-mode xmlns:xlink x-height".split(" ").forEach(function(e){var a=e.replace(Zu,Yu);ie[a]=new Ce(a,1,!1,e,null,!1,!1)});"xlink:actuate xlink:arcrole xlink:role xlink:show xlink:title xlink:type".split(" ").forEach(function(e){var a=e.replace(Zu,Yu);ie[a]=new Ce(a,1,!1,e,"http://www.w3.org/1999/xlink",!1,!1)});["xml:base","xml:lang","xml:space"].forEach(function(e){var a=e.replace(Zu,Yu);ie[a]=new Ce(a,1,!1,e,"http://www.w3.org/XML/1998/namespace",!1,!1)});["tabIndex","crossOrigin"].forEach(function(e){ie[e]=new Ce(e,1,!1,e.toLowerCase(),null,!1,!1)});ie.xlinkHref=new Ce("xlinkHref",1,!1,"xlink:href","http://www.w3.org/1999/xlink",!0,!1);["src","href","action","formAction"].forEach(function(e){ie[e]=new Ce(e,1,!1,e.toLowerCase(),null,!0,!0)});function Ju(e,a,t,o){var r=ie.hasOwnProperty(a)?ie[a]:null;(r!==null?r.type!==0:o||!(2<a.length)||a[0]!=="o"&&a[0]!=="O"||a[1]!=="n"&&a[1]!=="N")&&(Jc(a,t,r,o)&&(t=null),o||r===null?Zc(a)&&(t===null?e.removeAttribute(a):e.setAttribute(a,""+t)):r.mustUseProperty?e[r.propertyName]=t===null?r.type===3?!1:"":t:(a=r.attributeName,o=r.attributeNamespace,t===null?e.removeAttribute(a):(r=r.type,t=r===3||r===4&&t===!0?"":""+t,o?e.setAttributeNS(o,a,t):e.setAttribute(a,t))))}u(Ju,"ta");var pa=qd.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED,er=Symbol.for("react.element"),st=Symbol.for("react.portal"),dt=Symbol.for("react.fragment"),en=Symbol.for("react.strict_mode"),uu=Symbol.for("react.profiler"),bd=Symbol.for("react.provider"),_d=Symbol.for("react.context"),an=Symbol.for("react.forward_ref"),nu=Symbol.for("react.suspense"),su=Symbol.for("react.suspense_list"),tn=Symbol.for("react.memo"),Ia=Symbol.for("react.lazy"),Vd=Symbol.for("react.offscreen"),Os=Symbol.iterator;function bt(e){return e===null||typeof e!="object"?null:(e=Os&&e[Os]||e["@@iterator"],typeof e=="function"?e:null)}u(bt,"Ka");var Z=Object.assign,Nl;function $t(e){if(Nl===void 0)try{throw Error()}catch(t){var a=t.stack.trim().match(/\n( *(at )?)/);Nl=a&&a[1]||""}return`
