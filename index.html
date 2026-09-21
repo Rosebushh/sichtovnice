@@ -137,6 +137,7 @@ function notifyAuth(user) {
 onAuthStateChanged(auth, (user) => {
   notifyAuth(user);
 });
+if (auth.currentUser) notifyAuth(auth.currentUser);
 
 window.__realSubscribe = (onData, onStatus) => {
   try {
@@ -1758,6 +1759,35 @@ header.app-top-header h1 {
   cursor: pointer !important;
   transition: all 0.2s ease !important;
 }
+
+  .btn-google-login {
+    height: 34px !important;
+    padding: 0 10px !important;
+    font-size: 11px !important;
+  background: #10b981 !important;
+  border: 1.5px solid #059669 !important;
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.45) !important;
+  color: #ffffff !important;
+  font-weight: 800 !important;
+  height: 38px !important;
+  padding: 0 14px !important;
+  border-radius: 8px !important;
+  font-size: 13px !important;
+  letter-spacing: 0.05em !important;
+  text-transform: uppercase !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  white-space: nowrap !important;
+  transition: all 0.2s ease !important;
+}
+.btn-google-login:hover {
+  background: #059669 !important;
+  box-shadow: 0 0 18px rgba(16, 185, 129, 0.7) !important;
+  transform: translateY(-1px) !important;
+}
+
 .btn-today-nav:hover {
   border-color: #fde047 !important;
   box-shadow: 0 0 18px rgba(252, 211, 77, 0.65) !important;
@@ -2188,7 +2218,7 @@ button.state-icon[aria-label*="dovolen" i] {
   header.app-top-header {
     position: relative !important;
     top: auto !important;
-    background: linear-gradient(180deg, #fdfbf7 0%, #ece4d4 100%) !important;
+    background: linear-gradient(180deg, #fffdfa 0%, #f4ede1 100%) !important;
     border-bottom: 2.5px solid #10b981 !important;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12) !important;
     padding: 10px 12px !important;
@@ -2238,7 +2268,10 @@ button.state-icon[aria-label*="dovolen" i] {
     color: #fef08a !important;
   }
 
-  .btn-google-login {
+    .btn-google-login {
+    height: 34px !important;
+    padding: 0 10px !important;
+    font-size: 11px !important;
     background: #10b981 !important;
     border: 1.5px solid #059669 !important;
     color: #ffffff !important;
@@ -2276,6 +2309,12 @@ button.state-icon[aria-label*="dovolen" i] {
   }
   .top-brand-logo {
     height: 36px !important;
+    background: rgba(14, 27, 20, 0.9) !important;
+    padding: 3px 8px !important;
+    border-radius: 8px !important;
+    border: 1px solid #10b981 !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25) !important;
+    filter: drop-shadow(0 0 1px #000000) drop-shadow(0 0 2px #000000) !important;
   }
   header.app-top-header h1 {
     font-size: 22px !important;
