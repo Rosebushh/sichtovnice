@@ -1594,10 +1594,46 @@ body, .sheet, .name-head, .break-row-label, .day-num, .day-name, .state-label, .
 }
 
 /* ========================================================= */
-/* LIŠTA SE JMÉNY — NEON FUSION                              */
+/* PULZUJÍCÍ SMARAGDOVÝ GLOW (ANIMACE)                       */
+/* ========================================================= */
+@keyframes emeraldCellGlow {
+  0%, 100% {
+    opacity: 0.45;
+    transform: scale(0.95);
+  }
+  50% {
+    opacity: 0.95;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes emeraldBadgePulse {
+  0%, 100% {
+    box-shadow: 0 0 14px rgba(52, 211, 153, 0.5), inset 0 0 6px rgba(52, 211, 153, 0.2);
+    border-color: #fcd34d;
+    text-shadow: 0 0 8px rgba(52, 211, 153, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 28px rgba(52, 211, 153, 0.9), 0 0 45px rgba(16, 185, 129, 0.5), inset 0 0 12px rgba(52, 211, 153, 0.4);
+    border-color: #fef08a;
+    text-shadow: 0 0 16px rgba(52, 211, 153, 0.85);
+  }
+}
+
+@keyframes emeraldTotalPulse {
+  0%, 100% {
+    text-shadow: 0 0 10px rgba(52, 211, 153, 0.45);
+  }
+  50% {
+    text-shadow: 0 0 22px rgba(52, 211, 153, 0.95), 0 0 35px rgba(16, 185, 129, 0.6);
+  }
+}
+
+/* ========================================================= */
+/* LIŠTA SE JMÉNY — NEON FUSION S PULZOVÁNÍM                 */
 /* ========================================================= */
 .sticky-people-header {
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5) !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5) !important;
   border-bottom: 2px solid #10b981 !important;
 }
 
@@ -1606,6 +1642,19 @@ body, .sheet, .name-head, .break-row-label, .day-num, .day-name, .state-label, .
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+/* Smaragdový glow rozlévající se do celého okna jména */
+.sticky-people-header > div::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: -15% !important;
+  background: radial-gradient(circle at center, rgba(16, 185, 129, 0.4) 0%, rgba(5, 150, 105, 0.15) 50%, transparent 75%) !important;
+  pointer-events: none !important;
+  animation: emeraldCellGlow 4s ease-in-out infinite !important;
+  z-index: 1 !important;
 }
 
 /* Štítek Neon Fusion pro jména */
@@ -1613,18 +1662,19 @@ body, .sheet, .name-head, .break-row-label, .day-num, .day-name, .state-label, .
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
-  padding: 4px 10px !important;
+  padding: 4px 12px !important;
   border-radius: 8px !important;
-  border: 2px solid #fcd34d !important; /* Zlatý rámeček */
+  border: 2px solid #fcd34d !important;
   background: linear-gradient(180deg, #102419 0%, #07130c 100%) !important;
-  box-shadow: 0 0 16px rgba(52, 211, 153, 0.6), inset 0 0 8px rgba(52, 211, 153, 0.25) !important; /* Smaragdový glow */
   color: #ecfdf5 !important;
   font-weight: 700 !important;
-  font-size: 23px !important; /* Stejná velikost 23px */
+  font-size: 23px !important;
   letter-spacing: 0.02em !important;
   text-transform: uppercase !important;
   line-height: 1 !important;
-  text-shadow: 0 0 8px rgba(52, 211, 153, 0.5) !important;
+  position: relative !important;
+  z-index: 2 !important;
+  animation: emeraldBadgePulse 4s ease-in-out infinite !important;
 }
 
 /* ========================================================= */
@@ -1643,7 +1693,7 @@ body, .sheet, .name-head, .break-row-label, .day-num, .day-name, .state-label, .
 
 .break-row-label {
   font-weight: 700 !important;
-  font-size: 23px !important; /* Stejná velikost 23px */
+  font-size: 23px !important;
   letter-spacing: 0.04em !important;
   text-transform: uppercase !important;
 }
@@ -1666,7 +1716,7 @@ body, .sheet, .name-head, .break-row-label, .day-num, .day-name, .state-label, .
 }
 
 /* ========================================================= */
-/* SPODNÍ LIŠTA SE SOUHRNEM HODIN — NEON FUSION              */
+/* SPODNÍ LIŠTA SE SOUHRNEM HODIN — NEON FUSION PULZOVÁNÍ    */
 /* ========================================================= */
 .grid.border-t-2 {
   border-top: 2px solid #10b981 !important;
@@ -1676,10 +1726,23 @@ body, .sheet, .name-head, .break-row-label, .day-num, .day-name, .state-label, .
 .grid.border-t-2 > div {
   border-right: 2px solid rgba(255, 255, 255, 0.15) !important;
   background: #0d1712 !important;
+  position: relative !important;
+  overflow: hidden !important;
 }
 
 .grid.border-t-2 > div:last-child {
   border-right: none !important;
+}
+
+/* Smaragdová aura v celém okně souhrnu */
+.grid.border-t-2 > div::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: -15% !important;
+  background: radial-gradient(circle at center, rgba(16, 185, 129, 0.35) 0%, rgba(5, 150, 105, 0.12) 55%, transparent 80%) !important;
+  pointer-events: none !important;
+  animation: emeraldCellGlow 4s ease-in-out infinite !important;
+  z-index: 1 !important;
 }
 
 /* Celkem vlevo v patičce */
@@ -1691,11 +1754,15 @@ body, .sheet, .name-head, .break-row-label, .day-num, .day-name, .state-label, .
   color: #6ee7b7 !important;
   text-transform: uppercase !important;
   letter-spacing: 0.05em !important;
+  position: relative !important;
+  z-index: 2 !important;
 }
 .total-sum {
   color: #fcd34d !important;
   text-shadow: 0 0 10px rgba(252, 211, 77, 0.4) !important;
   font-size: 24px !important;
+  position: relative !important;
+  z-index: 2 !important;
 }
 
 /* Jména a hodiny v patičce */
@@ -1703,19 +1770,25 @@ body, .sheet, .name-head, .break-row-label, .day-num, .day-name, .state-label, .
   color: #a7f3d0 !important;
   font-weight: 600 !important;
   letter-spacing: 0.03em !important;
+  position: relative !important;
+  z-index: 2 !important;
 }
 
 .total-num {
-  color: #fcd34d !important; /* Zlatá čísla */
+  color: #fcd34d !important;
   font-size: 28px !important;
   font-weight: 700 !important;
-  text-shadow: 0 0 12px rgba(52, 211, 153, 0.5) !important; /* Smaragdový glow */
+  position: relative !important;
+  z-index: 2 !important;
+  animation: emeraldTotalPulse 4s ease-in-out infinite !important;
 }
 
 .total-unit {
   color: #34d399 !important;
   font-weight: 700 !important;
   font-size: 16px !important;
+  position: relative !important;
+  z-index: 2 !important;
 }
 
 /* Mobilní zobrazení */
