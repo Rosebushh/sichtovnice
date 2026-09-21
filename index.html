@@ -1594,39 +1594,44 @@ body, .sheet, .name-head, .break-row-label, .day-num, .day-name, .state-label, .
 }
 
 /* ========================================================= */
-/* MASIVNÍ ROZLÉVAJÍCÍ SE SMARAGDOVÝ GLOW (SVĚTLA & STÍNY)   */
+/* PULZACE: OD STŘEDU Z ČERNÉ DO SMARAGDU A ZPĚT DO ČERNÉ    */
+/* Všechny sloupce synchronizované v absolutním čase        */
 /* ========================================================= */
-@keyframes emeraldGlowFullSpread {
-  0%, 100% {
-    opacity: 0.35;
-    background: radial-gradient(circle at center, rgba(16, 185, 129, 0.45) 0%, rgba(5, 150, 105, 0.2) 45%, rgba(4, 120, 87, 0.05) 75%, transparent 100%);
-    transform: scale(0.9);
+@keyframes emeraldBreathingPulse {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
   }
   50% {
     opacity: 1;
-    background: radial-gradient(circle at center, rgba(52, 211, 153, 0.85) 0%, rgba(16, 185, 129, 0.55) 40%, rgba(5, 150, 105, 0.25) 70%, transparent 100%);
-    transform: scale(1.15);
+    transform: scale(1.4);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.3);
   }
 }
 
 /* ========================================================= */
-/* HORNÍ LIŠTA SE JMÉNY — NEON FUSION S ROZLÉVÁNÍM           */
+/* HORNÍ LIŠTA SE JMÉNY — NEON FUSION                        */
 /* ========================================================= */
 .sticky-people-header {
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5) !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6) !important;
   border-bottom: 2px solid #10b981 !important;
-  background: #08100c !important;
+  background: #060a08 !important;
 }
 
+/* Tlačítko Jména vlevo nahoře */
 .sticky-people-header > .date-col {
-  background: #0a140f !important;
+  background: #080e0a !important;
   border-right: 2px solid #10b981 !important;
   color: #6ee7b7 !important;
 }
 
+/* Každá buňka se jménem (včetně Martina) má čistě černé pozadí */
 .sticky-people-header > div {
-  background: #09130e !important;
-  border-right: 2px solid rgba(255, 255, 255, 0.15) !important;
+  background: #060a08 !important;
+  border-right: 2px solid rgba(255, 255, 255, 0.12) !important;
   padding: 4px 6px !important;
   display: flex !important;
   align-items: center !important;
@@ -1639,17 +1644,18 @@ body, .sheet, .name-head, .break-row-label, .day-num, .day-name, .state-label, .
   border-right: none !important;
 }
 
-/* Masivní rozlévající se glow do celého okna nahoře */
+/* Plynulá smaragdová záře rozlévající se z černé do celého okna a zpět */
 .sticky-people-header > div::before {
   content: "" !important;
   position: absolute !important;
-  inset: -25% !important;
+  inset: -35% !important;
+  background: radial-gradient(circle at center, rgba(52, 211, 153, 0.8) 0%, rgba(16, 185, 129, 0.45) 35%, rgba(5, 150, 105, 0.15) 60%, transparent 80%) !important;
   pointer-events: none !important;
-  animation: emeraldGlowFullSpread 4s ease-in-out infinite !important;
+  animation: emeraldBreathingPulse 5s ease-in-out infinite !important;
   z-index: 1 !important;
 }
 
-/* Zlatý rámeček se jménem */
+/* Štítek Neon Fusion pro jména */
 .name-head {
   display: inline-flex !important;
   align-items: center !important;
@@ -1671,16 +1677,16 @@ body, .sheet, .name-head, .break-row-label, .day-num, .day-name, .state-label, .
 }
 
 /* ========================================================= */
-/* SPODNÍ LIŠTA SE SOUHRNEM HODIN — ROZLÉVÁNÍ                */
+/* SPODNÍ LIŠTA SE SOUHRNEM HODIN                            */
 /* ========================================================= */
 .grid.border-t-2 {
   border-top: 2px solid #10b981 !important;
-  background: #08100c !important;
+  background: #060a08 !important;
 }
 
 .grid.border-t-2 > div {
-  background: #09130e !important;
-  border-right: 2px solid rgba(255, 255, 255, 0.15) !important;
+  background: #060a08 !important;
+  border-right: 2px solid rgba(255, 255, 255, 0.12) !important;
   position: relative !important;
   overflow: hidden !important;
 }
@@ -1689,18 +1695,19 @@ body, .sheet, .name-head, .break-row-label, .day-num, .day-name, .state-label, .
   border-right: none !important;
 }
 
-/* Masivní rozlévající se glow do celého okna dole */
+/* Plynulá smaragdová záře rozlévající se z černé do celého okna a zpět */
 .grid.border-t-2 > div::before {
   content: "" !important;
   position: absolute !important;
-  inset: -25% !important;
+  inset: -35% !important;
+  background: radial-gradient(circle at center, rgba(52, 211, 153, 0.8) 0%, rgba(16, 185, 129, 0.45) 35%, rgba(5, 150, 105, 0.15) 60%, transparent 80%) !important;
   pointer-events: none !important;
-  animation: emeraldGlowFullSpread 4s ease-in-out infinite !important;
+  animation: emeraldBreathingPulse 5s ease-in-out infinite !important;
   z-index: 1 !important;
 }
 
 .grid.border-t-2 > .date-col {
-  background: #0a140f !important;
+  background: #080e0a !important;
   border-right: 2px solid #10b981 !important;
 }
 .grid.border-t-2 > .date-col .label {
@@ -1744,17 +1751,15 @@ body, .sheet, .name-head, .break-row-label, .day-num, .day-name, .state-label, .
 }
 
 /* ========================================================= */
-/* SLOUPCE S DATUMEM A DNY (PRACOVNÍ DNY) — NEON FUSION      */
+/* SLOUPCE S DATUMEM A DNY — PRACOVNÍ DNY                    */
 /* ========================================================= */
-/* Pouze pracovní dny: vyloučit .weekend-row a .holiday-row */
 .day-row:not(.weekend-row):not(.holiday-row) > .date-col {
-  background: #09130e !important;
+  background: #080e0a !important;
   border-right: 2px solid #10b981 !important;
   position: relative !important;
   box-shadow: inset 0 0 16px rgba(16, 185, 129, 0.25) !important;
 }
 
-/* Zlaté číslo dne se smaragdovým glow (statické bez pulzace) */
 .day-row:not(.weekend-row):not(.holiday-row) .day-num {
   color: #fcd34d !important;
   text-shadow: 0 0 10px rgba(52, 211, 153, 0.5) !important;
@@ -1764,7 +1769,6 @@ body, .sheet, .name-head, .break-row-label, .day-num, .day-name, .state-label, .
   margin-bottom: 4px !important;
 }
 
-/* Smaragdová zkratka dne (Po, Út, ...) */
 .day-row:not(.weekend-row):not(.holiday-row) .day-name {
   color: #a7f3d0 !important;
   text-shadow: 0 0 6px rgba(16, 185, 129, 0.4) !important;
@@ -1776,7 +1780,90 @@ body, .sheet, .name-head, .break-row-label, .day-num, .day-name, .state-label, .
 }
 
 /* ========================================================= */
-/* NÁPISY V OKNECH, VÍKEND A SVÁTKY (23px)                   */
+/* VÍKENDY A SVÁTKY — DARK NEON DESIGN SLADĚNÝ S APLIKACÍ    */
+/* ========================================================= */
+/* Víkend: Hluboký temně indigový/břidlicový odstín */
+.weekend-row,
+.weekend-row > div,
+.weekend-row .date-col,
+.weekend-row .break-row-cell {
+  background-color: #12131a !important;
+}
+
+.weekend-row .date-col {
+  border-right: 2px solid #6366f1 !important;
+  box-shadow: inset 0 0 14px rgba(99, 102, 241, 0.2) !important;
+}
+
+.weekend-row .day-num {
+  color: #c7d2fe !important;
+  text-shadow: 0 0 10px rgba(99, 102, 241, 0.5) !important;
+  font-size: 28px !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  margin-bottom: 4px !important;
+}
+
+.weekend-row .day-name {
+  color: #818cf8 !important;
+  font-size: 21px !important;
+  font-weight: 600 !important;
+  line-height: 1 !important;
+  letter-spacing: 0.04em !important;
+  text-transform: uppercase !important;
+}
+
+.weekend-row .break-row-label {
+  color: #a5b4fc !important;
+  text-shadow: 0 0 12px rgba(99, 102, 241, 0.6) !important;
+}
+
+/* Svátky: Hluboký temně rubínový odstín */
+.holiday-row,
+.holiday-row > div,
+.holiday-row .date-col,
+.holiday-row .break-row-cell {
+  background-color: #1a0f14 !important;
+}
+
+.holiday-row .date-col {
+  border-right: 2px solid #f43f5e !important;
+  box-shadow: inset 0 0 14px rgba(244, 63, 94, 0.2) !important;
+}
+
+.holiday-row .day-num {
+  color: #fecdd3 !important;
+  text-shadow: 0 0 10px rgba(244, 63, 94, 0.5) !important;
+  font-size: 28px !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  margin-bottom: 4px !important;
+}
+
+.holiday-row .day-name {
+  color: #fb7185 !important;
+  font-size: 21px !important;
+  font-weight: 600 !important;
+  line-height: 1 !important;
+  letter-spacing: 0.04em !important;
+  text-transform: uppercase !important;
+}
+
+.holiday-row .break-row-label {
+  color: #fda4af !important;
+  text-shadow: 0 0 12px rgba(244, 63, 94, 0.6) !important;
+}
+
+/* Společný styl pro break-row-label (VÍKEND a název svátku) */
+.break-row-label {
+  font-weight: 700 !important;
+  font-size: 23px !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+}
+
+/* ========================================================= */
+/* NÁPISY V OKNECH (23px)                                    */
 /* ========================================================= */
 .state-label {
   font-weight: 700 !important;
@@ -1787,13 +1874,6 @@ body, .sheet, .name-head, .break-row-label, .day-num, .day-name, .state-label, .
   background: transparent !important;
   box-shadow: none !important;
   padding: 0 !important;
-}
-
-.break-row-label {
-  font-weight: 700 !important;
-  font-size: 23px !important;
-  letter-spacing: 0.04em !important;
-  text-transform: uppercase !important;
 }
 
 .shift-time {
@@ -1840,10 +1920,10 @@ body, .sheet, .name-head, .break-row-label, .day-num, .day-name, .state-label, .
   .total-sum {
     font-size: 18px !important;
   }
-  .day-row:not(.weekend-row):not(.holiday-row) .day-num {
+  .day-row .day-num {
     font-size: 22px !important;
   }
-  .day-row:not(.weekend-row):not(.holiday-row) .day-name {
+  .day-row .day-name {
     font-size: 15px !important;
   }
 }
@@ -1867,7 +1947,7 @@ Error generating stack: `+l.message+`
         <td style="padding: 10px 12px; text-align: right; border-bottom: 1px solid #e0d8cc;">${G.sick?`<span style="background: #fcedb6; color: #7c5c06; padding: 2px 7px; border-radius: 4px; font-weight: 700; font-size: 9pt;">${G.sick} d</span>`:"\u2014"}</td>
         <td style="padding: 10px 12px; text-align: right; border-bottom: 1px solid #e0d8cc;">${G.obstacles?`<span style="background: #dbeaf4; color: #2f6f9f; padding: 2px 7px; border-radius: 4px; font-weight: 700; font-size: 9pt;">${G.obstacles} d</span>`:"\u2014"}</td>
       </tr>
-    `).join(""),z=window.open("","_blank");if(!z)return;z.document.title="V\xFDkaz doch\xE1zky \u2014 "+S;let Wo=z.document.createElement("style");Wo.textContent="@page { size: A4 portrait; margin: 15mm 12mm 15mm 12mm; }body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; color: #26221d; margin: 0; padding: 20px 24px 30px; background: #f7f5f0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }.top-bar { display: flex; justify-content: space-between; align-items: center; background: #26221d; color: #fff; padding: 12px 18px; border-radius: 9px; margin-bottom: 22px; box-shadow: 0 4px 14px rgba(0,0,0,0.15); }.top-title { font-weight: 700; font-size: 11pt; letter-spacing: 0.04em; display: flex; align-items: center; gap: 8px; }.top-actions { display: flex; gap: 10px; align-items: center; }.btn-action { background: #1c5a3d; color: #fff; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 700; font-size: 9.5pt; cursor: pointer; text-transform: uppercase; letter-spacing: 0.05em; display: inline-flex; align-items: center; gap: 6px; }.btn-action:hover { background: #14462e; }.btn-close { background: #443c33; color: #e6ded3; border: none; padding: 8px 14px; border-radius: 6px; font-weight: 600; font-size: 9.5pt; cursor: pointer; }.btn-close:hover { background: #574e43; }.sheet-card { background: #fff; border: 1px solid #d9cfc0; border-radius: 10px; padding: 28px; box-shadow: 0 6px 20px -6px rgba(0,0,0,0.1); max-width: 900px; margin: 0 auto; }.header { border-bottom: 2.5px solid #1c5a3d; padding-bottom: 12px; margin-bottom: 22px; display: flex; justify-content: space-between; align-items: flex-end; }h1 { margin: 0; font-size: 20pt; color: #1c5a3d; font-weight: 800; letter-spacing: -0.02em; }.subtitle { font-size: 10pt; color: #57503f; margin-top: 4px; font-weight: 600; }.period-badge { background: #f1e7d8; color: #6d4a2f; padding: 6px 14px; border-radius: 6px; font-size: 12pt; font-weight: 800; }.meta-grid { display: flex; gap: 14px; margin-bottom: 24px; }.meta-box { flex: 1; background: #faf8f5; border: 1px solid #d9cfc0; border-radius: 8px; padding: 10px 14px; }.meta-label { font-size: 8pt; text-transform: uppercase; color: #6e6657; font-weight: 700; letter-spacing: 0.05em; }.meta-val { font-size: 16pt; font-weight: 800; color: #1c5a3d; margin-top: 2px; }.meta-val.alt { color: #2f6f9f; }table { width: 100%; border-collapse: collapse; margin-bottom: 24px; }th { background: #26221d; color: #fdf6e9; text-align: left; padding: 10px 12px; font-size: 8.5pt; text-transform: uppercase; letter-spacing: 0.06em; }.num { text-align: right; }.total-row td { background: #f1e7d8 !important; font-weight: 800; border-top: 2px solid #bda88e; border-bottom: 2px solid #bda88e; font-size: 11pt; padding: 11px 12px; }.footer-note { font-size: 8.5pt; color: #8a8275; text-align: right; margin-top: 20px; }@media print { body { background: #fff; padding: 0; } .top-bar { display: none !important; } .sheet-card { border: none; box-shadow: none; padding: 0; max-width: none; margin: 0; } }",z.document.head.appendChild(Wo),z.document.body.innerHTML="<div class='top-bar'><div class='top-title'><span>\u{1F4C4} M\u011Bs\xED\u010Dn\xED v\xFDkaz pro \xFA\u010Detn\xED ("+S+")</span></div><div class='top-actions'><button class='btn-action' onclick='window.print()'>\u{1F5A8}\uFE0F Vytisknout / Ulo\u017Eit PDF</button><button class='btn-close' onclick='window.close()'>\u2715 Zav\u0159\xEDt okno</button></div></div><div class='sheet-card'><div class='header'><div><h1>M\u011AS\xCD\u010CN\xCD V\xDDKAZ DOCH\xC1ZKY</h1><div class='subtitle'>Viola okrasn\xE9 zahrady s.r.o. \xB7 Podklad pro mzdov\xE9 \xFA\u010Detnictv\xED</div></div><div class='period-badge'>"+S+"</div></div><div class='meta-grid'><div class='meta-box'><div class='meta-label'>Odpracovan\xE9 hodiny celkem</div><div class='meta-val'>"+Ut(O)+" h</div></div><div class='meta-box'><div class='meta-label'>Odpracovan\xE9 sm\u011Bny</div><div class='meta-val'>"+q+"</div></div><div class='meta-box'><div class='meta-label'>Dovolen\xE1 (dny)</div><div class='meta-val alt'>"+K+" d</div></div><div class='meta-box'><div class='meta-label'>P\u0159ek\xE1\u017Eky / D\xE9\u0161\u0165</div><div class='meta-val alt'>"+_e+" d</div></div></div><table><thead><tr><th style='width: 28%;'>Zam\u011Bstnanec</th><th class='num' style='width: 20%;'>Odpracov\xE1no</th><th class='num' style='width: 13%;'>Sm\u011Bny</th><th class='num' style='width: 13%;'>Dovolen\xE1</th><th class='num' style='width: 13%;'>Nemoc</th><th class='num' style='width: 13%;'>P\u0159ek\xE1\u017Eky</th></tr></thead><tbody>"+ls+"<tr class='total-row'><td>CELKEM FIRMA</td><td class='num' style='color: #1c5a3d;'>"+Ut(O)+" h</td><td class='num'>"+q+"</td><td class='num'>"+K+" d</td><td class='num'>"+Ha+" d</td><td class='num'>"+_e+" d</td></tr></tbody></table><div class='footer-note'>Vygenerov\xE1no ze \u0160ichtovnice Viola dne "+R+"</div></div>",z.focus()},"printReport"),title:"Vytisknout nebo ulo\u017Eit v\xFDkaz do PDF pro \xFA\u010Detn\xED","aria-label":"V\xFDkaz doch\xE1zky do PDF",className:"cell-btn inline-flex items-center gap-1.5 rounded-[7px] border px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-white",style:{background:"var(--stamp)",borderColor:"var(--stamp)",boxShadow:"0 1px 2px rgba(0,0,0,0.12)"},children:[(0,F.jsx)(Oo,{size:13,strokeWidth:2.4}),(0,F.jsx)("span",{children:"V\xFDkaz PDF"})]})]})]}),(0,F.jsxs)("div",{className:"flex flex-col items-end gap-1",children:[(0,F.jsx)("span",{id:"sync-status",style:{display:"block",height:16,maxWidth:280,font:"12px/16px system-ui, sans-serif",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis",color:d.user?"var(--stamp)":"var(--muted)",fontWeight:600},children:d.user?`${m} \xB7 ${d.user.email||"Google \xFA\u010Det"}`:m}),(0,F.jsxs)("div",{className:"flex items-center gap-2",children:[(0,F.jsx)("button",{type:"button",onClick:()=>rs(-1),"aria-label":"P\u0159edchoz\xED m\u011Bs\xEDc",className:"cell-btn grid h-10 w-10 place-items-center rounded-[9px] border bg-[var(--sheet)]",style:{borderColor:"var(--rule)"},children:(0,F.jsx)(Bo,{size:18,strokeWidth:2.4})}),(0,F.jsx)("div",{className:"grid h-10 min-w-[168px] place-items-center rounded-[9px] border bg-[var(--sheet)] px-4",style:{borderColor:"var(--rule)"},children:(0,F.jsxs)("span",{className:"label text-[14px]",children:[Gn[fe]," ",B]})}),(0,F.jsx)("button",{type:"button",onClick:()=>rs(1),"aria-label":"Dal\u0161\xED m\u011Bs\xEDc",className:"cell-btn grid h-10 w-10 place-items-center rounded-[9px] border bg-[var(--sheet)]",style:{borderColor:"var(--rule)"},children:(0,F.jsx)(Ro,{size:18,strokeWidth:2.4})}),!d.user&&(0,F.jsx)("button",{type:"button",onClick:()=>cc(),className:"cell-btn flex h-10 items-center rounded-[9px] border px-3.5 text-[13px] font-bold uppercase tracking-wider",style:{background:"var(--ink)",borderColor:"var(--ink)",color:"#fdf6e9"},children:"P\u0159ihl\xE1sit Google"}),(0,F.jsxs)("button",{type:"button",onClick:wc,className:"cell-btn flex h-10 items-center gap-1.5 rounded-[9px] border px-3.5 text-[13px] font-bold uppercase tracking-wider",style:{background:"var(--today-bg)",borderColor:"var(--today)",color:"#5d4310"},children:[(0,F.jsx)(No,{size:14,strokeWidth:2.6}),"Dnes"]})]})]})]}),(0,F.jsx)("div",{className:"sheet rounded-[12px]",children:(0,F.jsx)("div",{className:"sheet-viewport",children:(0,F.jsxs)("div",{style:{minWidth:Jn+Vo*hc},children:[(0,F.jsxs)("div",{className:"sticky-people-header sticky top-0 z-20 grid border-b-2",style:{...Cl,background:"var(--ink)",borderColor:"var(--accent)"},children:[(0,F.jsxs)("button",{type:"button",onClick:()=>P&&l(!0),title:P?"Upravit jm\xE9na ve sloupc\xEDch":"Jm\xE9na (pouze spr\xE1vce)",className:`cell-btn date-col flex h-14 flex-col items-center justify-center gap-0.5 border-r ${P?"cursor-pointer":"cursor-default opacity-85"}`,style:{borderColor:"#ffffff",color:P?"#f0c987":"#b0a596",background:"var(--ink)",zIndex:30},children:[P&&(0,F.jsx)(Uo,{size:15,strokeWidth:2.5}),(0,F.jsx)("span",{className:"label text-[9px]",children:"Jm\xE9na"})]}),Wv.map((D,S)=>(0,F.jsx)("div",{className:"flex h-14 items-center justify-center border-r px-2 last:border-r-0",style:{borderColor:"#ffffff",background:S%2===0?"#26221d":"#352e26"},children:(0,F.jsx)("span",{className:"name-head label max-w-full truncate",style:{color:"#fdf6e9"},title:D.name,children:D.name})},D.id))]}),Ho.map(D=>{let S=qa(D),R=jn(D),T=Il[S],O=R>4,q=S===Ic,K=!!te[S],Ha=(!!T||O)&&!K,_e=!!T||O;return(0,F.jsxs)("div",{"data-today":q?"1":void 0,className:`grid day-row border-b last:border-b-0 ${Ha?T?"holiday-row":"weekend-row":""}`,style:{...Cl,borderColor:R===0?"var(--rule)":"var(--rule-soft)"},children:[(0,F.jsxs)("div",{role:_e?"button":void 0,tabIndex:_e?0:void 0,title:_e?K?"Zru\u0161it pracovn\xED den":"P\u0159epnout na pracovn\xED den":void 0,onClick:_e&&k?()=>bo(S):void 0,onKeyDown:_e?z=>{(z.key==="Enter"||z.key===" ")&&(z.preventDefault(),bo(S))}:void 0,className:`perforation date-col flex flex-col items-center justify-center gap-0.5 border-r py-2 ${_e?"cell-btn cursor-pointer":""}`,style:{borderColor:"var(--rule)",background:q?"var(--today-bg)":K?T?"var(--holiday)":"var(--weekend)":T?"var(--holiday)":O?"var(--weekend)":"var(--sheet)"},children:[(0,F.jsx)("span",{className:"day-num",style:{color:q?"#5d4310":K?"var(--ink)":T?"var(--holiday-ink)":O?"var(--weekend-ink)":"var(--ink)"},children:D.getDate()}),(0,F.jsx)("span",{className:"day-name",style:{color:q?"#8a6a1c":K?"var(--accent)":T?"var(--holiday-ink)":O?"var(--weekend-ink)":"var(--muted)"},children:Zf[R]}),K&&(0,F.jsx)("span",{className:"label mt-0.5 rounded-[3px] px-1 text-[8px]",style:{background:"var(--shift)",color:"var(--accent)"},children:"Pr\xE1ce"})]}),Ha?(0,F.jsx)("div",{role:"button",tabIndex:0,title:"P\u0159epnout na pracovn\xED den",onClick:()=>k&&bo(S),onKeyDown:z=>{(z.key==="Enter"||z.key===" ")&&(z.preventDefault(),bo(S))},className:"cell-btn break-row-cell cursor-pointer",style:{gridColumn:`span ${Vo}`},children:(0,F.jsx)("span",{className:"break-row-label truncate",style:{color:T?"var(--holiday-ink)":"var(--weekend-ink)"},children:T||"V\xCDKEND"})}):Wv.map((z,Wo)=>{let G=M[S]?.[z.id],Se=n?.key===S&&n?.personId===z.id,Go=Wo%2===0?"col-even":"col-odd";return(0,F.jsx)("div",{className:`border-r last:border-r-0 ${Go}`,style:{borderColor:"var(--rule-soft)"},children:(0,F.jsx)($n,{entry:G,isToday:q,editing:Se,readOnly:!x(z,S),onStartEdit:()=>{x(z,S)&&s({key:S,personId:z.id})},onStopEdit:()=>s(null),onChange:rt=>{x(z,S)&&_o(S,z.id,rt)},onClear:()=>{x(z,S)&&_o(S,z.id,null)},stripeLevel:Sc[S]?.[z.id]||0,isAdmin:v,onToggleVacation:()=>{v&&_o(S,z.id,{...G,lateRequest:!G?.lateRequest})},onToggleState:rt=>{x(z,S)&&vc(S,z.id,rt,D)}})},z.id)})]},S)}),(0,F.jsxs)("div",{className:"grid border-t-2",style:{...Cl,borderColor:"var(--stamp)"},children:[(0,F.jsxs)("div",{className:"date-col flex flex-col items-center justify-center gap-0.5 border-r py-3",style:{borderColor:"#2f6e4f",background:"var(--stamp)"},children:[(0,F.jsx)("span",{className:"label text-[10px]",style:{color:"#cdeedd"},children:"Celkem"}),(0,F.jsx)("span",{className:"total-sum",style:{color:"#fbfdfb"},children:Ut(Math.round(yc*100)/100)||"0"})]}),Wv.map(D=>(0,F.jsxs)("div",{className:"flex flex-col items-center justify-center gap-0.5 border-r px-1.5 py-3 last:border-r-0",style:{borderColor:"#2f6e4f",background:"var(--stamp)"},children:[(0,F.jsx)("span",{className:"label max-w-full truncate text-[12px]",style:{color:"#cdeedd"},title:D.name,children:D.name}),(0,F.jsxs)("span",{className:"flex items-baseline gap-1",children:[(0,F.jsx)("span",{className:"total-num",style:{color:"#fbfdfb"},children:Ut(Math.round(os[D.id]*100)/100)||"0"}),(0,F.jsx)("span",{className:"total-unit",style:{color:"#cdeedd"},children:"h"})]})]},D.id))]})]})})})]}),r&&(0,F.jsx)(Zn,{people:w,onChange:Cc,onClose:()=>l(!1)})]})}u(ts,"App");var gc=ve(ma()),xc=document.getElementById("root");if(!xc)throw new Error("Artifact root element is missing.");(0,Lc.createRoot)(xc).render((0,gc.jsx)(ts,{}));})();
+    `).join(""),z=window.open("","_blank");if(!z)return;z.document.title="V\xFDkaz doch\xE1zky \u2014 "+S;let Wo=z.document.createElement("style");Wo.textContent="@page { size: A4 portrait; margin: 15mm 12mm 15mm 12mm; }body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; color: #26221d; margin: 0; padding: 20px 24px 30px; background: #f7f5f0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }.top-bar { display: flex; justify-content: space-between; align-items: center; background: #26221d; color: #fff; padding: 12px 18px; border-radius: 9px; margin-bottom: 22px; box-shadow: 0 4px 14px rgba(0,0,0,0.15); }.top-title { font-weight: 700; font-size: 11pt; letter-spacing: 0.04em; display: flex; align-items: center; gap: 8px; }.top-actions { display: flex; gap: 10px; align-items: center; }.btn-action { background: #1c5a3d; color: #fff; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 700; font-size: 9.5pt; cursor: pointer; text-transform: uppercase; letter-spacing: 0.05em; display: inline-flex; align-items: center; gap: 6px; }.btn-action:hover { background: #14462e; }.btn-close { background: #443c33; color: #e6ded3; border: none; padding: 8px 14px; border-radius: 6px; font-weight: 600; font-size: 9.5pt; cursor: pointer; }.btn-close:hover { background: #574e43; }.sheet-card { background: #fff; border: 1px solid #d9cfc0; border-radius: 10px; padding: 28px; box-shadow: 0 6px 20px -6px rgba(0,0,0,0.1); max-width: 900px; margin: 0 auto; }.header { border-bottom: 2.5px solid #1c5a3d; padding-bottom: 12px; margin-bottom: 22px; display: flex; justify-content: space-between; align-items: flex-end; }h1 { margin: 0; font-size: 20pt; color: #1c5a3d; font-weight: 800; letter-spacing: -0.02em; }.subtitle { font-size: 10pt; color: #57503f; margin-top: 4px; font-weight: 600; }.period-badge { background: #f1e7d8; color: #6d4a2f; padding: 6px 14px; border-radius: 6px; font-size: 12pt; font-weight: 800; }.meta-grid { display: flex; gap: 14px; margin-bottom: 24px; }.meta-box { flex: 1; background: #faf8f5; border: 1px solid #d9cfc0; border-radius: 8px; padding: 10px 14px; }.meta-label { font-size: 8pt; text-transform: uppercase; color: #6e6657; font-weight: 700; letter-spacing: 0.05em; }.meta-val { font-size: 16pt; font-weight: 800; color: #1c5a3d; margin-top: 2px; }.meta-val.alt { color: #2f6f9f; }table { width: 100%; border-collapse: collapse; margin-bottom: 24px; }th { background: #26221d; color: #fdf6e9; text-align: left; padding: 10px 12px; font-size: 8.5pt; text-transform: uppercase; letter-spacing: 0.06em; }.num { text-align: right; }.total-row td { background: #f1e7d8 !important; font-weight: 800; border-top: 2px solid #bda88e; border-bottom: 2px solid #bda88e; font-size: 11pt; padding: 11px 12px; }.footer-note { font-size: 8.5pt; color: #8a8275; text-align: right; margin-top: 20px; }@media print { body { background: #fff; padding: 0; } .top-bar { display: none !important; } .sheet-card { border: none; box-shadow: none; padding: 0; max-width: none; margin: 0; } }",z.document.head.appendChild(Wo),z.document.body.innerHTML="<div class='top-bar'><div class='top-title'><span>\u{1F4C4} M\u011Bs\xED\u010Dn\xED v\xFDkaz pro \xFA\u010Detn\xED ("+S+")</span></div><div class='top-actions'><button class='btn-action' onclick='window.print()'>\u{1F5A8}\uFE0F Vytisknout / Ulo\u017Eit PDF</button><button class='btn-close' onclick='window.close()'>\u2715 Zav\u0159\xEDt okno</button></div></div><div class='sheet-card'><div class='header'><div><h1>M\u011AS\xCD\u010CN\xCD V\xDDKAZ DOCH\xC1ZKY</h1><div class='subtitle'>Viola okrasn\xE9 zahrady s.r.o. \xB7 Podklad pro mzdov\xE9 \xFA\u010Detnictv\xED</div></div><div class='period-badge'>"+S+"</div></div><div class='meta-grid'><div class='meta-box'><div class='meta-label'>Odpracovan\xE9 hodiny celkem</div><div class='meta-val'>"+Ut(O)+" h</div></div><div class='meta-box'><div class='meta-label'>Odpracovan\xE9 sm\u011Bny</div><div class='meta-val'>"+q+"</div></div><div class='meta-box'><div class='meta-label'>Dovolen\xE1 (dny)</div><div class='meta-val alt'>"+K+" d</div></div><div class='meta-box'><div class='meta-label'>P\u0159ek\xE1\u017Eky / D\xE9\u0161\u0165</div><div class='meta-val alt'>"+_e+" d</div></div></div><table><thead><tr><th style='width: 28%;'>Zam\u011Bstnanec</th><th class='num' style='width: 20%;'>Odpracov\xE1no</th><th class='num' style='width: 13%;'>Sm\u011Bny</th><th class='num' style='width: 13%;'>Dovolen\xE1</th><th class='num' style='width: 13%;'>Nemoc</th><th class='num' style='width: 13%;'>P\u0159ek\xE1\u017Eky</th></tr></thead><tbody>"+ls+"<tr class='total-row'><td>CELKEM FIRMA</td><td class='num' style='color: #1c5a3d;'>"+Ut(O)+" h</td><td class='num'>"+q+"</td><td class='num'>"+K+" d</td><td class='num'>"+Ha+" d</td><td class='num'>"+_e+" d</td></tr></tbody></table><div class='footer-note'>Vygenerov\xE1no ze \u0160ichtovnice Viola dne "+R+"</div></div>",z.focus()},"printReport"),title:"Vytisknout nebo ulo\u017Eit v\xFDkaz do PDF pro \xFA\u010Detn\xED","aria-label":"V\xFDkaz doch\xE1zky do PDF",className:"cell-btn inline-flex items-center gap-1.5 rounded-[7px] border px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-white",style:{background:"var(--stamp)",borderColor:"var(--stamp)",boxShadow:"0 1px 2px rgba(0,0,0,0.12)"},children:[(0,F.jsx)(Oo,{size:13,strokeWidth:2.4}),(0,F.jsx)("span",{children:"V\xFDkaz PDF"})]})]})]}),(0,F.jsxs)("div",{className:"flex flex-col items-end gap-1",children:[(0,F.jsx)("span",{id:"sync-status",style:{display:"block",height:16,maxWidth:280,font:"12px/16px system-ui, sans-serif",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis",color:d.user?"var(--stamp)":"var(--muted)",fontWeight:600},children:d.user?`${m} \xB7 ${d.user.email||"Google \xFA\u010Det"}`:m}),(0,F.jsxs)("div",{className:"flex items-center gap-2",children:[(0,F.jsx)("button",{type:"button",onClick:()=>rs(-1),"aria-label":"P\u0159edchoz\xED m\u011Bs\xEDc",className:"cell-btn grid h-10 w-10 place-items-center rounded-[9px] border bg-[var(--sheet)]",style:{borderColor:"var(--rule)"},children:(0,F.jsx)(Bo,{size:18,strokeWidth:2.4})}),(0,F.jsx)("div",{className:"grid h-10 min-w-[168px] place-items-center rounded-[9px] border bg-[var(--sheet)] px-4",style:{borderColor:"var(--rule)"},children:(0,F.jsxs)("span",{className:"label text-[14px]",children:[Gn[fe]," ",B]})}),(0,F.jsx)("button",{type:"button",onClick:()=>rs(1),"aria-label":"Dal\u0161\xED m\u011Bs\xEDc",className:"cell-btn grid h-10 w-10 place-items-center rounded-[9px] border bg-[var(--sheet)]",style:{borderColor:"var(--rule)"},children:(0,F.jsx)(Ro,{size:18,strokeWidth:2.4})}),!d.user&&(0,F.jsx)("button",{type:"button",onClick:()=>cc(),className:"cell-btn flex h-10 items-center rounded-[9px] border px-3.5 text-[13px] font-bold uppercase tracking-wider",style:{background:"var(--ink)",borderColor:"var(--ink)",color:"#fdf6e9"},children:"P\u0159ihl\xE1sit Google"}),(0,F.jsxs)("button",{type:"button",onClick:wc,className:"cell-btn flex h-10 items-center gap-1.5 rounded-[9px] border px-3.5 text-[13px] font-bold uppercase tracking-wider",style:{background:"var(--today-bg)",borderColor:"var(--today)",color:"#5d4310"},children:[(0,F.jsx)(No,{size:14,strokeWidth:2.6}),"Dnes"]})]})]})]}),(0,F.jsx)("div",{className:"sheet rounded-[12px]",children:(0,F.jsx)("div",{className:"sheet-viewport",children:(0,F.jsxs)("div",{style:{minWidth:Jn+Vo*hc},children:[(0,F.jsxs)("div",{className:"sticky-people-header sticky top-0 z-20 grid border-b-2",style:{...Cl,background:"var(--ink)",borderColor:"var(--accent)"},children:[(0,F.jsxs)("button",{type:"button",onClick:()=>P&&l(!0),title:P?"Upravit jm\xE9na ve sloupc\xEDch":"Jm\xE9na (pouze spr\xE1vce)",className:`cell-btn date-col flex h-14 flex-col items-center justify-center gap-0.5 border-r ${P?"cursor-pointer":"cursor-default opacity-85"}`,style:{borderColor:"#ffffff",color:P?"#f0c987":"#b0a596",background:"var(--ink)",zIndex:30},children:[P&&(0,F.jsx)(Uo,{size:15,strokeWidth:2.5}),(0,F.jsx)("span",{className:"label text-[9px]",children:"Jm\xE9na"})]}),Wv.map((D,S)=>(0,F.jsx)("div",{className:"flex h-14 items-center justify-center border-r px-2 last:border-r-0",style:{borderColor:"rgba(255,255,255,0.12)",background:"#060a08"},children:(0,F.jsx)("span",{className:"name-head label max-w-full truncate",style:{color:"#fdf6e9"},title:D.name,children:D.name})},D.id))]}),Ho.map(D=>{let S=qa(D),R=jn(D),T=Il[S],O=R>4,q=S===Ic,K=!!te[S],Ha=(!!T||O)&&!K,_e=!!T||O;return(0,F.jsxs)("div",{"data-today":q?"1":void 0,className:`grid day-row border-b last:border-b-0 ${Ha?T?"holiday-row":"weekend-row":""}`,style:{...Cl,borderColor:R===0?"var(--rule)":"var(--rule-soft)"},children:[(0,F.jsxs)("div",{role:_e?"button":void 0,tabIndex:_e?0:void 0,title:_e?K?"Zru\u0161it pracovn\xED den":"P\u0159epnout na pracovn\xED den":void 0,onClick:_e&&k?()=>bo(S):void 0,onKeyDown:_e?z=>{(z.key==="Enter"||z.key===" ")&&(z.preventDefault(),bo(S))}:void 0,className:`perforation date-col flex flex-col items-center justify-center gap-0.5 border-r py-2 ${_e?"cell-btn cursor-pointer":""}`,style:{borderColor:"var(--rule)",background:q?"var(--today-bg)":K?T?"var(--holiday)":"var(--weekend)":T?"var(--holiday)":O?"var(--weekend)":"var(--sheet)"},children:[(0,F.jsx)("span",{className:"day-num",style:{color:q?"#5d4310":K?"var(--ink)":T?"var(--holiday-ink)":O?"var(--weekend-ink)":"var(--ink)"},children:D.getDate()}),(0,F.jsx)("span",{className:"day-name",style:{color:q?"#8a6a1c":K?"var(--accent)":T?"var(--holiday-ink)":O?"var(--weekend-ink)":"var(--muted)"},children:Zf[R]}),K&&(0,F.jsx)("span",{className:"label mt-0.5 rounded-[3px] px-1 text-[8px]",style:{background:"var(--shift)",color:"var(--accent)"},children:"Pr\xE1ce"})]}),Ha?(0,F.jsx)("div",{role:"button",tabIndex:0,title:"P\u0159epnout na pracovn\xED den",onClick:()=>k&&bo(S),onKeyDown:z=>{(z.key==="Enter"||z.key===" ")&&(z.preventDefault(),bo(S))},className:"cell-btn break-row-cell cursor-pointer",style:{gridColumn:`span ${Vo}`},children:(0,F.jsx)("span",{className:"break-row-label truncate",style:{color:T?"var(--holiday-ink)":"var(--weekend-ink)"},children:T||"V\xCDKEND"})}):Wv.map((z,Wo)=>{let G=M[S]?.[z.id],Se=n?.key===S&&n?.personId===z.id,Go=Wo%2===0?"col-even":"col-odd";return(0,F.jsx)("div",{className:`border-r last:border-r-0 ${Go}`,style:{borderColor:"var(--rule-soft)"},children:(0,F.jsx)($n,{entry:G,isToday:q,editing:Se,readOnly:!x(z,S),onStartEdit:()=>{x(z,S)&&s({key:S,personId:z.id})},onStopEdit:()=>s(null),onChange:rt=>{x(z,S)&&_o(S,z.id,rt)},onClear:()=>{x(z,S)&&_o(S,z.id,null)},stripeLevel:Sc[S]?.[z.id]||0,isAdmin:v,onToggleVacation:()=>{v&&_o(S,z.id,{...G,lateRequest:!G?.lateRequest})},onToggleState:rt=>{x(z,S)&&vc(S,z.id,rt,D)}})},z.id)})]},S)}),(0,F.jsxs)("div",{className:"grid border-t-2",style:{...Cl,borderColor:"var(--stamp)"},children:[(0,F.jsxs)("div",{className:"date-col flex flex-col items-center justify-center gap-0.5 border-r py-3",style:{borderColor:"#2f6e4f",background:"var(--stamp)"},children:[(0,F.jsx)("span",{className:"label text-[10px]",style:{color:"#cdeedd"},children:"Celkem"}),(0,F.jsx)("span",{className:"total-sum",style:{color:"#fbfdfb"},children:Ut(Math.round(yc*100)/100)||"0"})]}),Wv.map(D=>(0,F.jsxs)("div",{className:"flex flex-col items-center justify-center gap-0.5 border-r px-1.5 py-3 last:border-r-0",style:{borderColor:"#2f6e4f",background:"var(--stamp)"},children:[(0,F.jsx)("span",{className:"label max-w-full truncate text-[12px]",style:{color:"#cdeedd"},title:D.name,children:D.name}),(0,F.jsxs)("span",{className:"flex items-baseline gap-1",children:[(0,F.jsx)("span",{className:"total-num",style:{color:"#fbfdfb"},children:Ut(Math.round(os[D.id]*100)/100)||"0"}),(0,F.jsx)("span",{className:"total-unit",style:{color:"#cdeedd"},children:"h"})]})]},D.id))]})]})})})]}),r&&(0,F.jsx)(Zn,{people:w,onChange:Cc,onClose:()=>l(!1)})]})}u(ts,"App");var gc=ve(ma()),xc=document.getElementById("root");if(!xc)throw new Error("Artifact root element is missing.");(0,Lc.createRoot)(xc).render((0,gc.jsx)(ts,{}));})();
 </script>
   </body>
 </html>
