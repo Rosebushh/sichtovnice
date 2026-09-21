@@ -15,7 +15,7 @@
 <meta http-equiv="Expires" content="0" />
 <script>
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./sw.js?v=42', { updateViaCache: 'none' })
+  navigator.serviceWorker.register('./sw.js?v=43', { updateViaCache: 'none' })
     .then((reg) => {
       reg.update();
       if (reg.waiting) reg.waiting.postMessage({ type: 'SKIP_WAITING' });
@@ -1599,18 +1599,23 @@ body, .sheet, .name-head, .break-row-label, .day-num, .day-name, .state-label, .
 :root {
   --emerald-pulse-opacity: 0.1;
   --emerald-pulse-scale: 0.4;
+  --top-header-height: 74px;
 }
 
 /* ========================================================= */
-/* HORNÍ LIŠTA ZÁHLAVÍ (HEADER APLIKACE) — EXKLUZIVNÍ NEON   */
+/* HORNÍ LIŠTA ZÁHLAVÍ (STICKY SPOLEČNĚ S LIŠTOU SE JMÉNY)   */
 /* ========================================================= */
 header.app-top-header {
+  position: -webkit-sticky !important;
+  position: sticky !important;
+  top: 0px !important;
+  z-index: 100 !important;
   background: radial-gradient(circle at 15% 50%, #0d2117 0%, #060e0a 100%) !important;
   border-bottom: 2.5px solid #10b981 !important;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(52, 211, 153, 0.2) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(52, 211, 153, 0.2) !important;
   border-radius: 14px !important;
-  padding: 12px 20px !important;
-  margin-bottom: 20px !important;
+  padding: 10px 20px !important;
+  margin-bottom: 16px !important;
   display: flex !important;
   flex-wrap: wrap !important;
   align-items: center !important;
@@ -1654,15 +1659,15 @@ header.app-top-header h1 {
   justify-content: center !important;
 }
 
-/* VÝRAZNÉ ZÁŘIVĚ ŽLUTÉ TLAČÍTKO VÝKAZ S ČERNÝM PÍSMEM */
+/* VÝRAZNÉ ZÁŘIVĚ ŽLUTÉ TLAČÍTKO VÝKAZ (#CCFF00) S ČERNÝM PÍSMEM 23px */
 .btn-pdf-report {
-  background: #facc15 !important; /* Klasická zářící žlutá */
-  border: 2px solid #fef08a !important;
-  box-shadow: 0 0 18px rgba(250, 204, 21, 0.85), inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
+  background: #ccff00 !important; /* Zářící žlutá #CCFF00 */
+  border: 2px solid #e5ff80 !important;
+  box-shadow: 0 0 20px rgba(204, 255, 0, 0.85), inset 0 1px 0 rgba(255, 255, 255, 0.7) !important;
   color: #000000 !important; /* Černý nápis */
   border-radius: 9px !important;
-  padding: 8px 24px !important;
-  font-size: 16px !important; /* Větší písmo */
+  padding: 6px 26px !important;
+  font-size: 23px !important; /* Stejně velké jako víkend, nemoc atd. (23px) */
   font-weight: 900 !important;
   letter-spacing: 0.08em !important;
   text-transform: uppercase !important;
@@ -1671,11 +1676,12 @@ header.app-top-header h1 {
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
+  line-height: 1 !important;
 }
 .btn-pdf-report:hover {
-  background: #fde047 !important;
+  background: #d8ff33 !important;
   border-color: #ffffff !important;
-  box-shadow: 0 0 26px rgba(250, 204, 21, 1) !important;
+  box-shadow: 0 0 30px rgba(204, 255, 0, 1) !important;
   transform: scale(1.05) translateY(-1px) !important;
 }
 
@@ -1766,7 +1772,6 @@ header.app-top-header h1 {
   background-color: #ece4d4 !important;
 }
 
-/* Výrazná 2px černá čára mezi sloupci ve dnech */
 .day-row > div:not(.date-col):not(.break-row-cell) {
   background-color: #ece4d4 !important;
   border-right: 2px solid #1a1815 !important;
@@ -1777,9 +1782,13 @@ header.app-top-header h1 {
 }
 
 /* ========================================================= */
-/* HORNÍ LIŠTA SE JMÉNY — ZLATÉ ČÁRY MEZI SLOUPCI            */
+/* HORNÍ LIŠTA SE JMÉNY — STICKY POD HLAVIČKOU              */
 /* ========================================================= */
 .sticky-people-header {
+  position: -webkit-sticky !important;
+  position: sticky !important;
+  top: var(--top-header-height) !important; /* Přilepeno přímo pod hlavičkou */
+  z-index: 90 !important;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6) !important;
   border-bottom: 2.5px solid #10b981 !important;
   background: #060a08 !important;
@@ -1787,14 +1796,13 @@ header.app-top-header h1 {
 
 .sticky-people-header > .date-col {
   background: #080e0a !important;
-  border-right: 2.5px solid #fcd34d !important; /* Zlatá čára v liště */
+  border-right: 2.5px solid #fcd34d !important;
   color: #6ee7b7 !important;
 }
 
-/* Výrazná 2.5px zlatá čára mezi jmény v horní liště */
 .sticky-people-header > div {
   background: #060a08 !important;
-  border-right: 2.5px solid #fcd34d !important; /* Zlatá čára v liště */
+  border-right: 2.5px solid #fcd34d !important;
   padding: 4px 6px !important;
   display: flex !important;
   align-items: center !important;
@@ -1807,7 +1815,6 @@ header.app-top-header h1 {
   border-right: none !important;
 }
 
-/* Synchronní smaragdový glow řízený globální proměnnou */
 .sticky-people-header > div::before {
   content: "" !important;
   position: absolute !important;
@@ -1840,7 +1847,7 @@ header.app-top-header h1 {
 }
 
 /* ========================================================= */
-/* SPODNÍ LIŠTA SE SOUHRNEM HODIN — ZLATÉ ČÁRY MEZI SLOUPCI  */
+/* SPODNÍ LIŠTA SE SOUHRNEM HODIN                            */
 /* ========================================================= */
 .grid.border-t-2 {
   border-top: 2.5px solid #10b981 !important;
@@ -1849,7 +1856,7 @@ header.app-top-header h1 {
 
 .grid.border-t-2 > div {
   background: #060a08 !important;
-  border-right: 2.5px solid #fcd34d !important; /* Zlatá čára v liště */
+  border-right: 2.5px solid #fcd34d !important;
   position: relative !important;
   overflow: hidden !important;
 }
@@ -1924,7 +1931,7 @@ header.app-top-header h1 {
 }
 
 .sticky-people-header > .date-col {
-  z-index: 60 !important;
+  z-index: 95 !important;
 }
 
 .grid.border-t-2 > .date-col {
@@ -2097,10 +2104,14 @@ header.app-top-header h1 {
 
 /* Mobilní zobrazení */
 @media (max-width: 768px) {
+  :root {
+    --top-header-height: 108px;
+  }
   header.app-top-header {
-    padding: 10px 12px !important;
-    gap: 10px !important;
+    padding: 8px 10px !important;
+    gap: 8px !important;
     border-radius: 0 !important;
+    margin-bottom: 0 !important;
   }
   header.app-top-header > div:first-child {
     gap: 8px !important;
@@ -2108,18 +2119,18 @@ header.app-top-header h1 {
     width: 100% !important;
   }
   .top-brand-logo {
-    height: 38px !important;
+    height: 36px !important;
   }
   header.app-top-header h1 {
-    font-size: 24px !important;
+    font-size: 22px !important;
   }
   .top-center-block {
     margin: 0 !important;
     margin-left: auto !important;
   }
   .btn-pdf-report {
-    padding: 6px 16px !important;
-    font-size: 14px !important;
+    padding: 5px 14px !important;
+    font-size: 18px !important;
   }
   .top-controls-block {
     width: 100% !important;
@@ -2211,9 +2222,8 @@ Error generating stack: `+l.message+`
 </script>
   
 <script>
-// Global synchronous pulse clock: guarantees 100.0% lock-step timing on PC and mobile
 (function() {
-  var DURATION = 6000; // 6 seconds cycle
+  var DURATION = 6000;
   function tick(timestamp) {
     var progress = (timestamp % DURATION) / DURATION;
     var sine = (Math.sin(progress * Math.PI * 2 - Math.PI / 2) + 1) / 2;
@@ -2222,6 +2232,14 @@ Error generating stack: `+l.message+`
     
     document.documentElement.style.setProperty('--emerald-pulse-opacity', opacity.toFixed(3));
     document.documentElement.style.setProperty('--emerald-pulse-scale', scale.toFixed(3));
+    
+    // Also update sticky header top position dynamically if header changes height
+    var topH = document.querySelector('header.app-top-header');
+    if (topH) {
+      var h = topH.offsetHeight;
+      if (h > 0) document.documentElement.style.setProperty('--top-header-height', h + 'px');
+    }
+    
     requestAnimationFrame(tick);
   }
   requestAnimationFrame(tick);
