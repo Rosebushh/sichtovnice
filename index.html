@@ -1588,49 +1588,99 @@ input[type="time"] {
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" />
 
 <style>
-/* Roboto Condensed typography update */
+/* Roboto Condensed typography */
 body, .sheet, .name-head, .break-row-label, .day-num, .day-name, .state-label, .total-num, .total-sum, .cell-btn, input, select, button {
   font-family: "Roboto Condensed", -apple-system, BlinkMacSystemFont, sans-serif !important;
-  letter-spacing: 0.01em !important;
 }
 
-/* Bold & prominent header names */
+/* ========================================================= */
+/* ZVÝRAZNĚNÍ HLAVIČKY SE JMÉNY                              */
+/* ========================================================= */
+.sticky-people-header {
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45) !important;
+}
+
+.sticky-people-header > div {
+  padding: 4px 6px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* Zvýrazněný štítek / odznak se jménem */
 .name-head {
-  font-family: "Roboto Condensed", sans-serif !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 6px 14px !important;
+  border-radius: 6px !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 1.5px solid rgba(240, 201, 135, 0.55) !important;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
+  color: #fff9ed !important;
   font-weight: 700 !important;
   font-size: 21px !important;
-  letter-spacing: 0.02em !important;
+  letter-spacing: 0.04em !important;
   text-transform: uppercase !important;
+  line-height: 1 !important;
 }
 
-/* Weekend and holiday labels */
+/* ========================================================= */
+/* TEXT V OKNECH (VELKÝ, NEZMENŠENÝ)                         */
+/* ========================================================= */
+/* Nápisy stavů: DOVOLENÁ, NEMOC, PŘEKÁŽKY na 1 řádku */
+.state-label {
+  font-weight: 700 !important;
+  font-size: 20px !important;
+  letter-spacing: 0.03em !important;
+  white-space: nowrap !important;
+  line-height: 1.1 !important;
+}
+
+/* Čas směn v oknech */
+.shift-time {
+  font-size: 28px !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+}
+
+/* Razítko hodin */
+.stamp, .shift-stamp {
+  font-size: 26px !important;
+  font-weight: 700 !important;
+}
+.stamp-fraction {
+  font-size: 17px !important;
+  font-weight: 700 !important;
+}
+
+/* Víkendy a svátky */
 .break-row-label {
-  font-family: "Roboto Condensed", sans-serif !important;
   font-weight: 700 !important;
   font-size: 22px !important;
   letter-spacing: 0.08em !important;
   text-transform: uppercase !important;
 }
 
-/* Date column numbers and days */
-.day-num {
-  font-family: "Roboto Condensed", sans-serif !important;
-  font-weight: 700 !important;
-  letter-spacing: 0 !important;
-}
-.day-name {
-  font-family: "Roboto Condensed", sans-serif !important;
-  font-weight: 600 !important;
-  letter-spacing: 0.02em !important;
-}
-
-/* State labels */
-.state-label {
-  font-family: "Roboto Condensed", sans-serif !important;
-  font-weight: 700 !important;
-  font-size: 16px !important;
-  letter-spacing: 0.02em !important;
-  white-space: nowrap !important;
+/* Mobilní zobrazení */
+@media (max-width: 768px) {
+  .name-head {
+    font-size: 16px !important;
+    padding: 4px 8px !important;
+    border-width: 1.5px !important;
+  }
+  .state-label {
+    font-size: 15px !important;
+  }
+  .shift-time {
+    font-size: 22px !important;
+  }
+  .shift-stamp {
+    font-size: 20px !important;
+  }
+  .stamp-fraction {
+    font-size: 14px !important;
+  }
 }
 </style>
 </head>
