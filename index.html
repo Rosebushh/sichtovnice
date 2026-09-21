@@ -1594,10 +1594,11 @@ body, .sheet, .name-head, .break-row-label, .day-num, .day-name, .state-label, .
 }
 
 /* ========================================================= */
-/* ZVÝRAZNĚNÍ HLAVIČKY SE JMÉNY                              */
+/* LIŠTA SE JMÉNY — NEON FUSION                              */
 /* ========================================================= */
 .sticky-people-header {
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45) !important;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5) !important;
+  border-bottom: 2px solid #10b981 !important;
 }
 
 .sticky-people-header > div {
@@ -1607,25 +1608,27 @@ body, .sheet, .name-head, .break-row-label, .day-num, .day-name, .state-label, .
   justify-content: center !important;
 }
 
+/* Štítek Neon Fusion pro jména */
 .name-head {
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
-  padding: 6px 14px !important;
-  border-radius: 6px !important;
-  background: rgba(255, 255, 255, 0.08) !important;
-  border: 1.5px solid rgba(240, 201, 135, 0.55) !important;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
-  color: #fff9ed !important;
+  padding: 4px 10px !important;
+  border-radius: 8px !important;
+  border: 2px solid #fcd34d !important; /* Zlatý rámeček */
+  background: linear-gradient(180deg, #102419 0%, #07130c 100%) !important;
+  box-shadow: 0 0 16px rgba(52, 211, 153, 0.6), inset 0 0 8px rgba(52, 211, 153, 0.25) !important; /* Smaragdový glow */
+  color: #ecfdf5 !important;
   font-weight: 700 !important;
-  font-size: 21px !important;
-  letter-spacing: 0.04em !important;
+  font-size: 23px !important; /* Stejná velikost 23px */
+  letter-spacing: 0.02em !important;
   text-transform: uppercase !important;
   line-height: 1 !important;
+  text-shadow: 0 0 8px rgba(52, 211, 153, 0.5) !important;
 }
 
 /* ========================================================= */
-/* TEXT V OKNECH (EXTRA VELKÝ, BEZ BÍLÉHO PODBARVENÍ)       */
+/* NÁPISY V OKNECH, VÍKEND A SVÁTKY (JEDNOTNÁ VELIKOST 23px) */
 /* ========================================================= */
 .state-label {
   font-weight: 700 !important;
@@ -1633,44 +1636,99 @@ body, .sheet, .name-head, .break-row-label, .day-num, .day-name, .state-label, .
   letter-spacing: 0.01em !important;
   white-space: nowrap !important;
   line-height: 1 !important;
-  background: transparent !important; /* Nikdy žádný bílý rámeček */
+  background: transparent !important;
   box-shadow: none !important;
   padding: 0 !important;
 }
 
-/* Čas směn v oknech */
+.break-row-label {
+  font-weight: 700 !important;
+  font-size: 23px !important; /* Stejná velikost 23px */
+  letter-spacing: 0.04em !important;
+  text-transform: uppercase !important;
+}
+
+/* Čas směn a razítka */
 .shift-time {
   font-size: 28px !important;
   font-weight: 700 !important;
   line-height: 1 !important;
 }
 
-/* Razítko hodin */
 .stamp, .shift-stamp {
   font-size: 26px !important;
   font-weight: 700 !important;
 }
+
 .stamp-fraction {
   font-size: 17px !important;
   font-weight: 700 !important;
 }
 
-/* Víkendy a svátky */
-.break-row-label {
-  font-weight: 700 !important;
-  font-size: 22px !important;
-  letter-spacing: 0.08em !important;
+/* ========================================================= */
+/* SPODNÍ LIŠTA SE SOUHRNEM HODIN — NEON FUSION              */
+/* ========================================================= */
+.grid.border-t-2 {
+  border-top: 2px solid #10b981 !important;
+  background: #08100c !important;
+}
+
+.grid.border-t-2 > div {
+  border-right: 2px solid rgba(255, 255, 255, 0.15) !important;
+  background: #0d1712 !important;
+}
+
+.grid.border-t-2 > div:last-child {
+  border-right: none !important;
+}
+
+/* Celkem vlevo v patičce */
+.grid.border-t-2 > .date-col {
+  background: #0a140f !important;
+  border-right: 2px solid #10b981 !important;
+}
+.grid.border-t-2 > .date-col .label {
+  color: #6ee7b7 !important;
   text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+}
+.total-sum {
+  color: #fcd34d !important;
+  text-shadow: 0 0 10px rgba(252, 211, 77, 0.4) !important;
+  font-size: 24px !important;
+}
+
+/* Jména a hodiny v patičce */
+.grid.border-t-2 .label {
+  color: #a7f3d0 !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.03em !important;
+}
+
+.total-num {
+  color: #fcd34d !important; /* Zlatá čísla */
+  font-size: 28px !important;
+  font-weight: 700 !important;
+  text-shadow: 0 0 12px rgba(52, 211, 153, 0.5) !important; /* Smaragdový glow */
+}
+
+.total-unit {
+  color: #34d399 !important;
+  font-weight: 700 !important;
+  font-size: 16px !important;
 }
 
 /* Mobilní zobrazení */
 @media (max-width: 768px) {
   .name-head {
     font-size: 16px !important;
-    padding: 4px 8px !important;
+    padding: 3px 6px !important;
     border-width: 1.5px !important;
   }
   .state-label {
+    font-size: 18px !important;
+  }
+  .break-row-label {
     font-size: 18px !important;
   }
   .shift-time {
@@ -1681,6 +1739,12 @@ body, .sheet, .name-head, .break-row-label, .day-num, .day-name, .state-label, .
   }
   .stamp-fraction {
     font-size: 14px !important;
+  }
+  .total-num {
+    font-size: 22px !important;
+  }
+  .total-sum {
+    font-size: 18px !important;
   }
 }
 </style>
