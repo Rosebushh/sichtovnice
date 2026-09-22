@@ -1,5 +1,5 @@
-// ŠICHTOVNICE - Network-First Service Worker v55
-const CACHE_NAME = 'sichtovnice-v55';
+// ŠICHTOVNICE - Network-First Service Worker v57
+const CACHE_NAME = 'sichtovnice-v57';
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();
@@ -22,11 +22,7 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   event.respondWith(
     fetch(event.request)
-      .then((networkResponse) => {
-        return networkResponse;
-      })
-      .catch(() => {
-        return caches.match(event.request);
-      })
+      .then((networkResponse) => networkResponse)
+      .catch(() => caches.match(event.request))
   );
 });
