@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <!-- Soft shadow for realistic depth -->
+    <filter id="pageShadow" x="-10%" y="-10%" width="125%" height="125%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#000000" flood-opacity="0.22" />
+    </filter>
+
+    <!-- Rich red gradient for the entire calendar body -->
+    <linearGradient id="bodyRed" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ea1d36" />
+      <stop offset="100%" stop-color="#c9001e" />
+    </linearGradient>
+
+    <!-- Subtle darker red accent line under header -->
+    <linearGradient id="redDivider" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#b0001a" />
+      <stop offset="50%" stop-color="#8a0014" />
+      <stop offset="100%" stop-color="#b0001a" />
+    </linearGradient>
+
+    <!-- Metallic rings gradient -->
+    <linearGradient id="metalRing" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#d1d5db" />
+      <stop offset="35%" stop-color="#ffffff" />
+      <stop offset="70%" stop-color="#e5e7eb" />
+      <stop offset="100%" stop-color="#9ca3af" />
+    </linearGradient>
+  </defs>
+
+  <!-- Entire Calendar Page is RED with drop shadow -->
+  <g filter="url(#pageShadow)">
+    <rect x="44" y="60" width="424" height="404" rx="36" fill="url(#bodyRed)" />
+  </g>
+
+  <!-- White text "KALENDÁŘ" -->
+  <text x="64" y="137" font-family="'Roboto Condensed', 'Oswald', -apple-system, sans-serif" font-weight="900" font-size="45" fill="#ffffff" letter-spacing="2.5">KALENDÁŘ</text>
+
+  <!-- Divider line below title -->
+  <line x1="44" y1="168" x2="468" y2="168" stroke="#a30018" stroke-width="2" />
+
+  <!-- Černobílá mřížka (White background card for the grid, dark gray/black borders and lines) -->
+  <rect x="84" y="192" width="344" height="240" rx="12" fill="#ffffff" stroke="#222222" stroke-width="3" />
+
+  <!-- Black/Charcoal Grid Lines -->
+  <!-- Horizontal lines -->
+  <line x1="84" y1="240" x2="428" y2="240" stroke="#cccccc" stroke-width="1.8" />
+  <line x1="84" y1="288" x2="428" y2="288" stroke="#cccccc" stroke-width="1.8" />
+  <line x1="84" y1="336" x2="428" y2="336" stroke="#cccccc" stroke-width="1.8" />
+  <line x1="84" y1="384" x2="428" y2="384" stroke="#cccccc" stroke-width="1.8" />
+
+  <!-- Vertical lines -->
+  <line x1="133.1" y1="192" x2="133.1" y2="432" stroke="#cccccc" stroke-width="1.8" />
+  <line x1="182.2" y1="192" x2="182.2" y2="432" stroke="#cccccc" stroke-width="1.8" />
+  <line x1="231.3" y1="192" x2="231.3" y2="432" stroke="#cccccc" stroke-width="1.8" />
+  <line x1="280.4" y1="192" x2="280.4" y2="432" stroke="#cccccc" stroke-width="1.8" />
+  <line x1="329.5" y1="192" x2="329.5" y2="432" stroke="#cccccc" stroke-width="1.8" />
+  <line x1="378.6" y1="192" x2="378.6" y2="432" stroke="#cccccc" stroke-width="1.8" />
+
+  <!-- Numbers (1-31) in Crisp Black -->
+  <g font-family="'Roboto Condensed', 'Oswald', -apple-system, sans-serif" font-weight="700" font-size="22" fill="#111827" text-anchor="middle" dominant-baseline="central">
+    <!-- Row 1: blanks, then 1, 2, 3 -->
+    <text x="305" y="216">1</text>
+    <text x="354" y="216">2</text>
+    <text x="403" y="216">3</text>
+
+    <!-- Row 2: 4 to 10 -->
+    <text x="108.5" y="264">4</text>
+    <text x="157.6" y="264">5</text>
+    <text x="206.7" y="264">6</text>
+    <text x="255.8" y="264">7</text>
+    <text x="305"   y="264">8</text>
+    <text x="354"   y="264">9</text>
+    <text x="403"   y="264">10</text>
+
+    <!-- Row 3: 11 to 17 -->
+    <text x="108.5" y="312">11</text>
+    <text x="157.6" y="312">12</text>
+    <text x="206.7" y="312">13</text>
+    <text x="255.8" y="312">14</text>
+    <text x="305"   y="312">15</text>
+    <text x="354"   y="312">16</text>
+    <text x="403"   y="312">17</text>
+
+    <!-- Row 4: 18 to 24 -->
+    <text x="108.5" y="360">18</text>
+    <text x="157.6" y="360">19</text>
+    <text x="206.7" y="360">20</text>
+    <text x="255.8" y="360">21</text>
+    <text x="305"   y="360">22</text>
+    <text x="354"   y="360">23</text>
+    <text x="403"   y="360">24</text>
+
+    <!-- Row 5: 25 to 31 -->
+    <text x="108.5" y="408">25</text>
+    <text x="157.6" y="408">26</text>
+    <text x="206.7" y="408">27</text>
+    <text x="255.8" y="408">28</text>
+    <text x="305"   y="408">29</text>
+    <text x="354"   y="408">30</text>
+    <text x="403"   y="408">31</text>
+  </g>
+
+  <!-- 6 Hanging Metallic Rings -->
+  <g>
+    <rect x="114" y="34" width="14" height="52" rx="7" fill="url(#metalRing)" stroke="#737a87" stroke-width="1.2" />
+    <rect x="168" y="34" width="14" height="52" rx="7" fill="url(#metalRing)" stroke="#737a87" stroke-width="1.2" />
+    <rect x="222" y="34" width="14" height="52" rx="7" fill="url(#metalRing)" stroke="#737a87" stroke-width="1.2" />
+    <rect x="276" y="34" width="14" height="52" rx="7" fill="url(#metalRing)" stroke="#737a87" stroke-width="1.2" />
+    <rect x="330" y="34" width="14" height="52" rx="7" fill="url(#metalRing)" stroke="#737a87" stroke-width="1.2" />
+    <rect x="384" y="34" width="14" height="52" rx="7" fill="url(#metalRing)" stroke="#737a87" stroke-width="1.2" />
+  </g>
+</svg>
