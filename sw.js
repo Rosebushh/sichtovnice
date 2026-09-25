@@ -12,7 +12,7 @@ const ASSETS_TO_CACHE = [
 
 // 1. Instalace Service Workeru
 self.addEventListener('install', (event) => {
-  // Vynutí okamžité převzetí kontroly bez čekání na zavření okna
+  // Vynutí okamžité převzetí kontroly bez čekání
   self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
@@ -40,12 +40,16 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const request = event.request;
 
+  // Ignorujeme ne-GET požadavky (např. POST), které do cache nelze ukládat
+  if (request.method !== 'GET') {
+    return;
+  }
+
   // Pro navigaci (načítání HTML stránky) použijeme strategii Network-First
   if (request.mode === 'navigate' || request.headers.get('accept')?.includes('text/html')) {
     event.respondWith(
       fetch(request)
         .then((networkResponse) => {
-          // Uložíme novou verzi do cache pro případ offline použití
           const responseToCache = networkResponse.clone();
           caches.open(CACHE_NAME).then((cache) => {
             cache.put(request, responseToCache);
@@ -53,14 +57,13 @@ self.addEventListener('fetch', (event) => {
           return networkResponse;
         })
         .catch(() => {
-          // Pokud síť selže (offline), vrátíme verzi z cache
           return caches.match(request);
         })
     );
     return;
   }
 
-  // Pro ostatní statické soubory (obrázky, ikony) zkusíme nejdřív cache, pak síť
+  // Pro ostatní statické GET soubory zkusíme nejdřív cache, pak síť
   event.respondWith(
     caches.match(request).then((cachedResponse) => {
       if (cachedResponse) {
