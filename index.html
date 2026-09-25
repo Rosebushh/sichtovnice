@@ -15,7 +15,7 @@
 <meta http-equiv="Expires" content="0" />
 <script>
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./sw.js?v=59', { updateViaCache: 'none' })
+  navigator.serviceWorker.register('./sw.js?v=60', { updateViaCache: 'none' })
     .then((reg) => {
       reg.update();
       if (reg.waiting) reg.waiting.postMessage({ type: 'SKIP_WAITING' });
@@ -59,7 +59,6 @@ window.__cleanState = function(state) {
   var s = JSON.parse(JSON.stringify(state));
   if (!s.entries) s.entries = {};
   
-  // 1. Očištění a rekonstrukce sloupců lidí
   var currentPeople = Array.isArray(s.people) ? s.people : [];
   var cleanPeople = [];
 
@@ -83,12 +82,11 @@ window.__cleanState = function(state) {
 
   s.people = cleanPeople;
 
-  // 2. Odstranění zbytků Veroniky z jakýchkoliv starých záznamů
+  // Odstranění zbytků Veroniky z jakýchkoliv starých záznamů
   if (s.entries) {
     Object.keys(s.entries).forEach(function(dayKey) {
       var dayObj = s.entries[dayKey];
       if (dayObj) {
-        // Pokud existuje staré ID Veroniky, smažeme
         currentPeople.forEach(function(p) {
           if (p && p.name && p.name.trim().toLowerCase() === "veronika") {
             delete dayObj[p.id];
@@ -202,7 +200,20 @@ if (auth.currentUser) notifyAuth(auth.currentUser);
 window.__realSubscribe = (onData, onStatus) => {
   const safeOnData = (data) => {
     if (data) {
+      var hasVeronika = Array.isArray(data.people) && data.people.some(p => p && p.name && p.name.trim().toLowerCase() === "veronika");
+      var hasDoubravka = Array.isArray(data.people) && data.people.some(p => p && p.name && p.name.trim().toLowerCase() === "doubravka");
+      var missingMartin = !Array.isArray(data.people) || !data.people.some(p => p && p.name && p.name.trim().toLowerCase() === "martin");
+      
       data = window.__cleanState(data);
+
+      // Pokud Firestore obsahuje zastaralá data s Veronikou/Doubravkou nebo chybí Martin,
+      // OKAMŽITĚ do Firestore zapíšeme očištěný stav, aby se databáze sama opravila!
+      if (hasVeronika || hasDoubravka || missingMartin) {
+        console.log("Firestore obsahuje zastaralá data - spouštím automatickou opravu databáze...");
+        if (window.__realSave) {
+          window.__realSave(data).catch(console.error);
+        }
+      }
     }
     safeOnData(data);
   };
@@ -230,7 +241,6 @@ window.__realSubscribe = (onData, onStatus) => {
 
 window.__realSave = async (state) => {
   try {
-    // Nikdy neukládat poškozená data s Veronikou nebo bez Martina
     var cleaned = window.__cleanState(state);
     const docRefMain = doc(db, "sichtovnice", "main");
     const docRef2 = doc(db, "sichtovnice", "v2");
