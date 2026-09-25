@@ -33,7 +33,7 @@ if ('serviceWorker' in navigator) {
 if ('caches' in window) {
   caches.keys().then((names) => {
     names.forEach((name) => {
-      if (!name.includes('v18')) caches.delete(name);
+      if (!name.includes('v57')) caches.delete(name);
     });
   });
 }
