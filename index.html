@@ -15,7 +15,7 @@
 <meta http-equiv="Expires" content="0" />
 <script>
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./sw.js?v=61', { updateViaCache: 'none' })
+  navigator.serviceWorker.register('./sw.js?v=63', { updateViaCache: 'none' })
     .then((reg) => {
       reg.update();
       if (reg.waiting) reg.waiting.postMessage({ type: 'SKIP_WAITING' });
@@ -121,30 +121,7 @@ window.__sichtovniceFirebase = {
 };
 </script>
 
-<script>
-(function() {
-  var orig = window.__realSubscribe;
-  if (!orig) return;
-  window.__realSubscribe = function(onData, onStatus) {
-    return orig(function(data) {
-      if (data && data.people && Array.isArray(data.people)) {
-        var hasMartin = data.people.some(function(p) { 
-          return (p.name && p.name.trim().toLowerCase() === "martin") || (p.email && p.email.trim().toLowerCase() === "rosebushh@gmail.com"); 
-        });
-        if (!hasMartin) {
-          data = JSON.parse(JSON.stringify(data));
-          data.people.unshift({
-            id: "martin-col",
-            name: "Martin",
-            email: "rosebushh@gmail.com"
-          });
-        }
-      }
-      safeOnData(data);
-    }, onStatus);
-  };
-})();
-</script>
+
 
 
 
@@ -197,42 +174,44 @@ onAuthStateChanged(auth, (user) => {
 });
 if (auth.currentUser) notifyAuth(auth.currentUser);
 
-window.__realSubscribe = (onData, onStatus) => {
-  const safeOnData = (data) => {
-    if (data) {
-      var hasVeronika = Array.isArray(data.people) && data.people.some(p => p && p.name && p.name.trim().toLowerCase() === "veronika");
-      var hasDoubravka = Array.isArray(data.people) && data.people.some(p => p && p.name && p.name.trim().toLowerCase() === "doubravka");
-      var missingMartin = !Array.isArray(data.people) || !data.people.some(p => p && p.name && p.name.trim().toLowerCase() === "martin");
-      
-      data = window.__cleanState(data);
-
-      if (hasVeronika || hasDoubravka || missingMartin) {
-        console.log("Firestore obsahuje zastaralá data - spouštím automatickou opravu databáze...");
-        if (window.__realSave) {
-          window.__realSave(data).catch(console.error);
-        }
-      }
-    }
-    safeOnData(data);
-  };
+window.__realSubscribe = (targetOnData, targetOnStatus) => {
   try {
     const docRef = doc(db, "sichtovnice", "main");
     const unsub = onSnapshot(docRef, (snap) => {
-      if (snap.exists()) {
-        const data = snap.data();
-        safeOnData(data);
-      } else {
-        onData(null);
+      try {
+        if (snap.exists()) {
+          let rawData = snap.data();
+          let sanitized = window.__cleanState(rawData);
+
+          // Pokud v cloudu chybí Martin nebo tam byla Veronika, na pozadí cloud opravíme
+          var hasVeronika = Array.isArray(rawData.people) && rawData.people.some(p => p && p.name && p.name.trim().toLowerCase() === "veronika");
+          var hasDoubravka = Array.isArray(rawData.people) && rawData.people.some(p => p && p.name && p.name.trim().toLowerCase() === "doubravka");
+          var missingMartin = !Array.isArray(rawData.people) || !rawData.people.some(p => p && p.name && p.name.trim().toLowerCase() === "martin");
+
+          if (hasVeronika || hasDoubravka || missingMartin) {
+            console.log("Opravuji Firestore na čistý stav...");
+            if (window.__realSave) {
+              window.__realSave(sanitized).catch(console.error);
+            }
+          }
+
+          if (targetOnData) targetOnData(sanitized);
+        } else {
+          if (targetOnData) targetOnData(null);
+        }
+        if (targetOnStatus) targetOnStatus("cloud");
+      } catch (innerErr) {
+        console.error("Error processing snapshot data:", innerErr);
+        if (targetOnStatus) targetOnStatus("cloud");
       }
-      if (onStatus) onStatus("cloud");
     }, (err) => {
       console.error("Firestore onSnapshot error:", err);
-      if (onStatus) onStatus("error");
+      if (targetOnStatus) targetOnStatus("error");
     });
     return unsub;
   } catch (err) {
     console.error("Firestore subscribe setup error:", err);
-    if (onStatus) onStatus("error");
+    if (targetOnStatus) targetOnStatus("error");
     return () => {};
   }
 };
@@ -241,12 +220,20 @@ window.__realSave = async (state) => {
   try {
     var cleaned = window.__cleanState(state);
     const docRefMain = doc(db, "sichtovnice", "main");
-    const docRef2 = doc(db, "sichtovnice", "v2");
+    
+    // 3 rotující denní sloty
+    var todaySlot = (new Date().getDate() % 3) + 1;
+    const docRefBackup = doc(db, "sichtovnice", "backup_" + todaySlot);
+    
+    var backupPayload = JSON.parse(JSON.stringify(cleaned));
+    backupPayload._backupDate = new Date().toISOString();
+    backupPayload._backupSlot = todaySlot;
+
     await Promise.all([
       setDoc(docRefMain, cleaned),
-      setDoc(docRef2, cleaned)
+      setDoc(docRefBackup, backupPayload)
     ]);
-    console.log("Firestore saved successfully");
+    console.log("Firestore saved successfully (main + backup_" + todaySlot + ")");
     return true;
   } catch (err) {
     console.error("Firestore save error:", err);
